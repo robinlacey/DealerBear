@@ -2,8 +2,9 @@ language: csharp
 mono: none
 dotnet: 2.2
 
-- sudo apt-get install -y dpkg
-
+before_install:
+  - sudo apt-get install -y dpkg
+  
 install:
 - dotnet restore
 
