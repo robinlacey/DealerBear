@@ -1,0 +1,13 @@
+language: csharp
+mono: none
+dotnet: 2.2
+
+install:
+- dotnet restore
+
+script:
+ - dotnet build
+ - dotnet test DealerBearTests/DealerBearTests.csproj /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+after_script:
+        - bash <(curl -s https://codecov.io/bash) 
