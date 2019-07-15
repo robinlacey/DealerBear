@@ -2,6 +2,9 @@ language: csharp
 mono: none
 dotnet: 2.2
 
+before_install:
+  - sudo apt-get update && sudo apt-get upgrade
+
 install:
 - dotnet restore
 
