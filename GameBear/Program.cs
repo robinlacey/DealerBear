@@ -1,4 +1,5 @@
 ﻿using System;
+using Messages;
 
 namespace GameBear
 {
@@ -6,7 +7,7 @@ namespace GameBear
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello GameBear!");
+            Console.WriteLine("Hello GameBear!"+ new SimpleMessage(){Text = " Message Library Built"}.Text);
         }
     }
 }

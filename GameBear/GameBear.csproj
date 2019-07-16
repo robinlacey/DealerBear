@@ -5,11 +5,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+      <ProjectReference Include="..\Messages\Messages.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Messages\Messages.csproj" />
+      <_ContentIncludedByDefault Remove="out\app.config" />
+      <_ContentIncludedByDefault Remove="out\GameBear.dll.config" />
+      <_ContentIncludedByDefault Remove="out\web.config" />
+      <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+      <_ContentIncludedByDefault Remove="out\appsettings.json" />
+      <_ContentIncludedByDefault Remove="out\GameBear.deps.json" />
+      <_ContentIncludedByDefault Remove="out\GameBear.runtimeconfig.json" />
     </ItemGroup>
 
 </Project>
