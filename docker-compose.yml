@@ -1,0 +1,25 @@
+version: "3.7"
+services:
+  dealerbear:
+    build:
+      context: ./
+      dockerfile: Dockerfile.dealerbear
+    depends_on:
+        - rabbitmq
+  gamebear:
+    build:
+      context: ./
+      dockerfile: Dockerfile.gamebear
+    depends_on:
+        - rabbitmq
+  packbear:
+    build:
+      context: ./
+      dockerfile: Dockerfile.packbear
+    depends_on:
+        - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    container_name: rabbitmq   
