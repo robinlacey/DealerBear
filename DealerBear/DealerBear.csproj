@@ -2,42 +2,42 @@
 
     <PropertyGroup>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-        <RootNamespace>DealerBear_API</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
-      <Compile Remove="out\**" />
+        <Compile Remove="out\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <EmbeddedResource Remove="out\**" />
+        <EmbeddedResource Remove="out\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Remove="out\**" />
+        <None Remove="out\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <Content Remove="out\**" />
+        <Content Remove="out\**" />
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="out\app.config" />
-      <_ContentIncludedByDefault Remove="out\DealerBear-API.dll.config" />
-      <_ContentIncludedByDefault Remove="out\web.config" />
-      <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
-      <_ContentIncludedByDefault Remove="out\appsettings.json" />
-      <_ContentIncludedByDefault Remove="out\DealerBear-API.deps.json" />
-      <_ContentIncludedByDefault Remove="out\DealerBear-API.runtimeconfig.json" />
-      <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
+        <_ContentIncludedByDefault Remove="out\app.config" />
+        <_ContentIncludedByDefault Remove="out\DealerBear-API.dll.config" />
+        <_ContentIncludedByDefault Remove="out\web.config" />
+        <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
+        <_ContentIncludedByDefault Remove="out\appsettings.json" />
+        <_ContentIncludedByDefault Remove="out\DealerBear-API.deps.json" />
+        <_ContentIncludedByDefault Remove="out\DealerBear-API.runtimeconfig.json" />
+        <_ContentIncludedByDefault Remove="Properties\launchSettings.json" />
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Messages\Messages.csproj" />
+        <ProjectReference Include="..\Messages\Messages.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.2" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     </ItemGroup>
 
 </Project>

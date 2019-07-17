@@ -1,6 +1,6 @@
 namespace DealerBear_API.UseCases.Error
 {
-    public class StartGameError:UseCaseError
+    public class StartGameError : UseCaseError
     {
         public StartGameError(string message)
         {

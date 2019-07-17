@@ -1,9 +1,14 @@
-version: "3.7"
+version: "3.0"
 services:
   dealerbear:
+    environment:
+      RABBITMQ_HOST : rabbitmq
+      RABBITMQ_PORT : "15672"
     build:
       context: ./
       dockerfile: Dockerfile.dealerbear
+    links: 
+        - rabbitmq
     depends_on:
         - rabbitmq
   gamebear:
@@ -12,14 +17,36 @@ services:
       dockerfile: Dockerfile.gamebear
     depends_on:
         - rabbitmq
+    links: 
+        - rabbitmq
+
   packbear:
     build:
       context: ./
       dockerfile: Dockerfile.packbear
     depends_on:
         - rabbitmq
+    links: 
+        - rabbitmq
+
   rabbitmq:
     image: rabbitmq:3-management
     ports:
-      - "15672:15672"
+        - "5672:5672"
+        - "15672:15672"
     container_name: rabbitmq   
+
+  integrationtest:
+    environment:
+      RABBITMQ_HOST : rabbitmq
+    build:
+      context: ./
+      dockerfile: Dockerfile.integration
+    depends_on:
+        - dealerbear
+        - gamebear
+        - packbear
+        - rabbitmq
+    links: 
+        - rabbitmq
+

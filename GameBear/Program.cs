@@ -7,7 +7,7 @@ namespace GameBear
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello GameBear!"+ new SimpleMessage(){Text = " Message Library Built"}.Text);
+            Console.WriteLine("Hello GameBear!" + new SimpleMessage() {Text = " Message Library Built"}.Text);
         }
     }
 }
