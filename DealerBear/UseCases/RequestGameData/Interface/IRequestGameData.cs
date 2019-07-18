@@ -1,7 +1,7 @@
 using MassTransit;
 using Messages;
 
-namespace DealerBear_API.UseCases.StartGame.Interface
+namespace DealerBear.UseCases.RequestGameData.Interface
 {
     public interface IRequestGameData
     {

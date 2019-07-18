@@ -1,10 +1,10 @@
-using DealerBear_API.Exceptions;
-using DealerBear_API.Messages;
-using DealerBear_API.UseCases.StartGame.Interface;
+using DealerBear.Exceptions;
+using DealerBear.Messages;
+using DealerBear.UseCases.RequestGameData.Interface;
 using MassTransit;
 using Messages;
 
-namespace DealerBear_API.UseCases.RequestGameData
+namespace DealerBear.UseCases.RequestGameData
 {
     public class RequestGameData : IRequestGameData
     {

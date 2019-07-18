@@ -1,4 +1,4 @@
-namespace IntegrationTests
+namespace IntegrationCore
 {
     enum ExitCode : int
     {

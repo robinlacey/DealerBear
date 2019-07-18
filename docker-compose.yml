@@ -3,7 +3,6 @@ services:
   dealerbear:
     environment:
       RABBITMQ_HOST : rabbitmq
-      RABBITMQ_PORT : "15672"
     build:
       context: ./
       dockerfile: Dockerfile.dealerbear
@@ -12,6 +11,8 @@ services:
     depends_on:
         - rabbitmq
   gamebear:
+    environment:
+      RABBITMQ_HOST : rabbitmq
     build:
       context: ./
       dockerfile: Dockerfile.gamebear

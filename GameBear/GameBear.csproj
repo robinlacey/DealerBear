@@ -5,17 +5,20 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Messages\Messages.csproj" />
+        <PackageReference Include="MassTransit.Extensions.DependencyInjection" Version="5.5.3" />
+        <PackageReference Include="MassTransit.RabbitMQ" Version="5.5.3" />
+        <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.2.0" />
     </ItemGroup>
 
     <ItemGroup>
-        <_ContentIncludedByDefault Remove="out\app.config" />
-        <_ContentIncludedByDefault Remove="out\GameBear.dll.config" />
-        <_ContentIncludedByDefault Remove="out\web.config" />
-        <_ContentIncludedByDefault Remove="out\appsettings.Development.json" />
-        <_ContentIncludedByDefault Remove="out\appsettings.json" />
-        <_ContentIncludedByDefault Remove="out\GameBear.deps.json" />
-        <_ContentIncludedByDefault Remove="out\GameBear.runtimeconfig.json" />
+      <Folder Include="Controllers" />
+      <Folder Include="Messages" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Messages\Messages.csproj" />
     </ItemGroup>
 
 </Project>

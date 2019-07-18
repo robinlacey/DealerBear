@@ -1,6 +1,6 @@
 using Messages;
 
-namespace DealerBear_API.Messages
+namespace DealerBear.Messages
 {
     public class IsSessionIDInUse : IIsSessionIDInUse
     {

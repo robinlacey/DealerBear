@@ -1,9 +1,8 @@
 using System;
-using DealerBear_API.Exceptions;
-using DealerBear_API.UseCases.RequestGameData;
-using DealerBear_API.UseCases.StartGame.Interface;
+using DealerBear.Exceptions;
+using DealerBear.UseCases.RequestGameData;
+using DealerBear.UseCases.RequestGameData.Interface;
 using DealerBearTests.Mocks;
-using MassTransit;
 using Messages;
 using NUnit.Framework;
 
@@ -59,6 +58,18 @@ namespace DealerBearTests.UseCases
                 IIsSessionIDInUse isSessionIDInUse = spy.MessageObject as IIsSessionIDInUse;
                 Assert.IsNotNull(isSessionIDInUse);
                 Assert.True(isSessionIDInUse.SessionID == id);
+            }
+        }
+
+        public class IdopotentTests
+        {
+            [Test]
+            public void TODO()
+            {
+                Assert.Fail(
+                    "Note: Potential slip ups: " +
+                    "1 - Starting a new game (dont want to start multiple games - check if session exists on game create game" +
+                    "2 - (not this use case) when playing a game pass in CardID )");
             }
         }
     }

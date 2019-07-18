@@ -1,4 +1,4 @@
-namespace DealerBear_API.UseCases.Error
+namespace DealerBear.UseCases.Error
 {
     public class StartGameError : UseCaseError
     {

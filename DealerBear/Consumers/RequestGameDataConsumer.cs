@@ -1,13 +1,10 @@
-using System;
 using System.Threading.Tasks;
-using DealerBear_API.Exceptions;
-using DealerBear_API.Messages;
-using DealerBear_API.UseCases.RequestGameData;
-using DealerBear_API.UseCases.StartGame.Interface;
+using DealerBear.UseCases.RequestGameData;
+using DealerBear.UseCases.RequestGameData.Interface;
 using MassTransit;
 using Messages;
 
-namespace DealerBear_API.Consumers
+namespace DealerBear.Consumers
 {
     public class RequestGameDataConsumer : IConsumer<IGameRequest>
     {

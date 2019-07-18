@@ -1,6 +1,6 @@
 using System;
 
-namespace DealerBear_API.Exceptions
+namespace DealerBear.Exceptions
 {
     public class InvalidSessionIDException : Exception
     {

@@ -1,6 +1,6 @@
 using Messages;
 
-namespace IntegrationTests.Messages
+namespace IntegrationCore.Messages
 {
     public class StartGameRequestMessage : IGameRequest
     {

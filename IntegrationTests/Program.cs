@@ -1,10 +1,10 @@
 ﻿using System;
-using IntegrationTests.Consumers;
-using IntegrationTests.Messages;
+using IntegrationCore.Consumers;
+using IntegrationCore.Messages;
 using MassTransit;
-using Messages;
+using MassTransit.RabbitMqTransport;
 
-namespace IntegrationTests
+namespace IntegrationCore
 {
     internal class Program
     {
@@ -27,7 +27,7 @@ namespace IntegrationTests
                     break;
                 }
             }
-            if (secondsWaited == 10)
+            if (secondsWaited == 20)
             {
                 Console.WriteLine("Failed StartGame...");
                 return (int) ExitCode.TimeOutFailure;
@@ -42,7 +42,7 @@ namespace IntegrationTests
             string rabbitMQHost = $"rabbitmq://{Environment.GetEnvironmentVariable("RABBITMQ_HOST")}";
             IBusControl bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
-                var host = sbc.Host(new Uri(rabbitMQHost), h =>
+                IRabbitMqHost host = sbc.Host(new Uri(rabbitMQHost), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");
@@ -59,9 +59,9 @@ namespace IntegrationTests
             bus.Publish(new StartGameRequestMessage {SessionID = sessionID});
         }
     }
-}
 
-public class AcceptanceTestStages
-{
-    public static bool ReturnedCorrectStartGameCardID = false;
+    public class AcceptanceTestStages
+    {
+        public static bool ReturnedCorrectStartGameCardID = false;
+    }
 }

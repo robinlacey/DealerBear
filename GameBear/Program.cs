@@ -1,13 +1,20 @@
-﻿using System;
-using Messages;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace GameBear
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello GameBear!" + new SimpleMessage() {Text = " Message Library Built"}.Text);
+            BuildWebHost(args).Run();
         }
+
+        public static IWebHost BuildWebHost(string[] args) =>
+            WebHost.CreateDefaultBuilder(args)
+                .UseStartup<Startup>()
+                .ConfigureLogging(builder => { builder.AddFilter("MassTransit", LogLevel.Debug); })
+                .Build();
     }
 }

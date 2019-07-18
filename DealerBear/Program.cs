@@ -1,19 +1,19 @@
 ﻿using System;
-using DealerBear_API.Consumers;
-using Messages;
+using DealerBear.Consumers;
 using MassTransit;
+using MassTransit.RabbitMqTransport;
 
-namespace DealerBear_API
+namespace DealerBear
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello DealerBear!" + new SimpleMessage() {Text = " Message Library Built"}.Text);
+            Console.WriteLine("Hello DealerBear!");
             string rabbitMQHost = $"rabbitmq://{Environment.GetEnvironmentVariable("RABBITMQ_HOST")}";
-            var bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
+            IBusControl bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
             {
-                var host = sbc.Host(new Uri(rabbitMQHost), h =>
+                IRabbitMqHost host = sbc.Host(new Uri(rabbitMQHost), h =>
                 {
                     h.Username("guest");
                     h.Password("guest");

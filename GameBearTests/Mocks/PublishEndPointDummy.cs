@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using GreenPipes;
 using MassTransit;
 
-namespace DealerBearTests.Mocks
+namespace GameBearTests.Mocks
 {
     public class PublishEndPointDummy : IPublishEndpoint
     {

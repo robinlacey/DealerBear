@@ -1,10 +1,9 @@
-using System;
 using System.Threading.Tasks;
-using IntegrationTests.Messages;
+using IntegrationCore.Messages;
 using MassTransit;
 using Messages;
 
-namespace IntegrationTests.Consumers
+namespace IntegrationCore.Consumers
 {
     public class ReceivedGameDataConsumer : IConsumer<IGameData>
     {
