@@ -3,7 +3,7 @@ using Messages;
 
 namespace GameBear.Gateways
 {
-    public class InMemoryGameDataGateway:IGameDataGateway
+    public class InMemoryGameDataGateway : IGameDataGateway
     {
         public IGameData GetGameData(string sessionID)
         {

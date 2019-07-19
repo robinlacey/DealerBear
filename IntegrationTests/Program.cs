@@ -12,7 +12,7 @@ namespace IntegrationCore
         {
             IBusControl bus = SetupRabbitMQ();
             bus.Start();
-            
+
             // Integration Tests
             // Publish Start Game
             StartNewGame(bus, "Scout The Dog");
@@ -26,7 +26,12 @@ namespace IntegrationCore
                     Console.WriteLine("Correctly returned StartGame ..");
                     break;
                 }
+                else
+                {
+                    Console.WriteLine("Waiting for StartGame... ");
+                }
             }
+
             if (secondsWaited == 20)
             {
                 Console.WriteLine("Failed StartGame...");

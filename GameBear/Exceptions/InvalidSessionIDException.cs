@@ -2,8 +2,7 @@ using System;
 
 namespace GameBear.Exceptions
 {
-    public class InvalidSessionIDException:Exception
+    public class InvalidSessionIDException : Exception
     {
-        
     }
 }

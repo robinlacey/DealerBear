@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using DealerBear.UseCases.RequestGameData;
 using DealerBear.UseCases.RequestGameData.Interface;
@@ -10,6 +11,7 @@ namespace DealerBear.Consumers
     {
         public async Task Consume(ConsumeContext<IGameRequest> context)
         {
+            Console.WriteLine("Recieved IGameRequest");
             IRequestGameData requestGameData = new RequestGameData();
             requestGameData.Execute(context.Message, context);
         }

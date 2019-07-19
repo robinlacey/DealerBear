@@ -55,9 +55,9 @@ namespace DealerBearTests.UseCases
                 IRequestGameData requestGameData = new RequestGameData();
                 string id = Guid.NewGuid().ToString();
                 requestGameData.Execute(new GameRequestStub(id), spy);
-                IIsSessionIDInUse isSessionIDInUse = spy.MessageObject as IIsSessionIDInUse;
-                Assert.IsNotNull(isSessionIDInUse);
-                Assert.True(isSessionIDInUse.SessionID == id);
+                IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse = spy.MessageObject as IRequestGameIsSessionIDInUse;
+                Assert.IsNotNull(requestGameIsSessionIDInUse);
+                Assert.True(requestGameIsSessionIDInUse.SessionID == id);
             }
         }
 

@@ -1,15 +1,14 @@
 using System;
 using System.Threading.Tasks;
 using GameBear.Gateways.Interface;
-using GameBear.UseCases;
-using GameBear.UseCases.IsExistingSession;
-using GameBear.UseCases.IsExistingSession.Interface;
+using GameBear.UseCases.RequestGameCheckExistingSession;
+using GameBear.UseCases.RequestGameCheckExistingSession.Interface;
 using MassTransit;
 using Messages;
 
 namespace GameBear.Consumers
 {
-    public class IsExistingSessionConsumer : IConsumer<IIsSessionIDInUse>
+    public class IsExistingSessionConsumer : IConsumer<IRequestGameIsSessionIDInUse>
     {
         private readonly IGameDataGateway _gameDataGateway;
 
@@ -19,10 +18,12 @@ namespace GameBear.Consumers
             Console.WriteLine("DataGateWay type" + gameDataGateway.GetType());
             _gameDataGateway = gameDataGateway;
         }
-        public async Task Consume(ConsumeContext<IIsSessionIDInUse> context)
+
+        public async Task Consume(ConsumeContext<IRequestGameIsSessionIDInUse> context)
         {
-            IIsExistingSession useCase = new IsExistingSession();
-            useCase.Execute(context.Message,_gameDataGateway, context);
+            IRequestGameCheckExistingSession useCase = new RequestGameCheckExistingSession();
+            Console.WriteLine("Recieved IRequestGameIsSessionIDInUse");
+            useCase.Execute(context.Message, _gameDataGateway, context);
         }
     }
 }

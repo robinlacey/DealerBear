@@ -3,7 +3,7 @@ using Messages;
 
 namespace GameBearTests.Mocks
 {
-    public class GameDataGatewayDummy:IGameDataGateway
+    public class GameDataGatewayDummy : IGameDataGateway
     {
         public IGameData GetGameData(string sessionID) => null;
 

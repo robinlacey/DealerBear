@@ -2,7 +2,7 @@ using Messages;
 
 namespace DealerBear.Messages
 {
-    public class IsSessionIDInUse : IIsSessionIDInUse
+    public class RequestGameIsSessionIDInUse : IRequestGameIsSessionIDInUse
     {
         public string SessionID { get; set; }
     }

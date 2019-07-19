@@ -3,15 +3,18 @@ using Messages;
 
 namespace GameBearTests.Mocks
 {
-    public class GameDataGatewaySpy:IGameDataGateway
+    public class GameDataGatewaySpy : IGameDataGateway
     {
         public string GetGameDataSessionID { get; private set; }
+
         public IGameData GetGameData(string sessionID)
         {
             GetGameDataSessionID = sessionID;
             return null;
         }
+
         public string IsExistingSessionSessionID { get; private set; }
+
         public bool IsExistingSession(string sessionID)
         {
             IsExistingSessionSessionID = sessionID;

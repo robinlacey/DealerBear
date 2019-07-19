@@ -2,13 +2,13 @@ using Messages;
 
 namespace GameBearTests.Mocks
 {
-    public class IsSessionIDInUseStub:IIsSessionIDInUse
+    public class RequestGameIsSessionIDInUseStub : IRequestGameIsSessionIDInUse
     {
-
-        public IsSessionIDInUseStub(string sessionID)
+        public RequestGameIsSessionIDInUseStub(string sessionID)
         {
             SessionID = sessionID;
         }
+
         public string SessionID { get; set; }
     }
 }

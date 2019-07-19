@@ -1,6 +1,6 @@
 namespace Messages
 {
-    public interface IIsSessionIDInUse
+    public interface IRequestGameSessionFound
     {
         string SessionID { get; set; }
     }

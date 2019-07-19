@@ -2,8 +2,8 @@
 using GameBear.Consumers;
 using GameBear.Gateways;
 using GameBear.Gateways.Interface;
-using GameBear.UseCases.IsExistingSession;
-using GameBear.UseCases.IsExistingSession.Interface;
+using GameBear.UseCases.RequestGameCheckExistingSession;
+using GameBear.UseCases.RequestGameCheckExistingSession.Interface;
 using GreenPipes;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
@@ -29,18 +29,18 @@ namespace GameBear
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
-            
-            services.AddScoped<IIsExistingSession, IsExistingSession>();
+
+            services.AddScoped<IRequestGameCheckExistingSession, RequestGameCheckExistingSession>();
             services.AddScoped<IsExistingSessionConsumer>();
-            
+
             services.AddMassTransit(x =>
             {
                 // add the consumer to the container
                 x.AddConsumer<IsExistingSessionConsumer>();
             });
-            
+
             string rabbitMQHost = $"rabbitmq://{Environment.GetEnvironmentVariable("RABBITMQ_HOST")}";
-            
+
             services.AddSingleton(provider => Bus.Factory.CreateUsingRabbitMq(cfg =>
             {
                 IRabbitMqHost host = cfg.Host(new Uri(rabbitMQHost), h =>
@@ -48,29 +48,28 @@ namespace GameBear
                     h.Username("guest");
                     h.Password("guest");
                 });
-                
+
                 cfg.ReceiveEndpoint(host, "IsExistingSession", e =>
                 {
                     e.PrefetchCount = 16;
                     e.UseMessageRetry(x => x.Interval(2, 100));
 
                     e.Consumer<IsExistingSessionConsumer>(provider);
-                    EndpointConvention.Map<IIsSessionIDInUse>(e.InputAddress);
+                    EndpointConvention.Map<IRequestGameIsSessionIDInUse>(e.InputAddress);
                 });
             }));
 
             services.AddSingleton<IGameDataGateway, InMemoryGameDataGateway>();
-            
+
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-            services.AddScoped(provider => provider.GetRequiredService<IBus>().CreateRequestClient<IIsSessionIDInUse>());
-            
+            services.AddScoped(provider =>
+                provider.GetRequiredService<IBus>().CreateRequestClient<IRequestGameIsSessionIDInUse>());
+
             services.AddSingleton<IHostedService, BusService>();
-            
-            
         }
-        
+
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
