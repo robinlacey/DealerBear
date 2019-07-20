@@ -2,16 +2,20 @@
 using DealerBear.Consumers;
 using DealerBear.Gateway;
 using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.CreateGameState;
+using DealerBear.UseCases.CreateGameState.Interface;
+using DealerBear.UseCases.GameSessionFound;
+using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
+using DealerBear.UseCases.GetCurrentGameState;
+using DealerBear.UseCases.GetCurrentGameState.Interface;
 using DealerBear.UseCases.RequestGameData;
 using DealerBear.UseCases.RequestGameData.Interface;
-using DealerBear.UseCases.RequestGameSessionFound;
-using DealerBear.UseCases.RequestGameSessionFound.Interface;
 using GreenPipes;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
-using Messages;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -23,7 +27,7 @@ namespace DealerBear
     public class Startup
     {
         public IConfiguration Configuration { get; }
-      
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -50,22 +54,23 @@ namespace DealerBear
             }));
 
             AddGateways(services);
-            
+
             services.AddSingleton<IPublishEndpoint>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<ISendEndpointProvider>(provider => provider.GetRequiredService<IBusControl>());
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
-            
+
             AddRequestClients(services);
 
             services.AddSingleton<IHostedService, BusService>();
         }
-        
+
         private static void AddGateways(IServiceCollection services)
         {
             services.AddSingleton<IAwaitingResponseGateway, InMemoryAwaitingResponseGateway>();
         }
-        
-        private static void SetEndPoints(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host, IServiceProvider provider)
+
+        private static void SetEndPoints(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
+            IServiceProvider provider)
         {
             SetEndpointForGameRequest(cfg, host, provider);
             SetEndpointForRequestGameSessionNotFound(cfg, host, provider);
@@ -93,8 +98,9 @@ namespace DealerBear
                 EndpointConvention.Map<IGameRequest>(e.InputAddress);
             });
         }
-        
-        private static void SetEndpointForRequestGameSessionNotFound(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
+
+        private static void SetEndpointForRequestGameSessionNotFound(IRabbitMqBusFactoryConfigurator cfg,
+            IRabbitMqHost host,
             IServiceProvider provider)
         {
             cfg.ReceiveEndpoint(host, "RequestGameSessionNotFound", e =>
@@ -105,8 +111,9 @@ namespace DealerBear
                 EndpointConvention.Map<IRequestGameSessionNotFound>(e.InputAddress);
             });
         }
-        
-        private static void SetEndpointForRequestGameSessionFound(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
+
+        private static void SetEndpointForRequestGameSessionFound(IRabbitMqBusFactoryConfigurator cfg,
+            IRabbitMqHost host,
             IServiceProvider provider)
         {
             cfg.ReceiveEndpoint(host, "RequestGameSessionFound", e =>
@@ -117,13 +124,13 @@ namespace DealerBear
                 EndpointConvention.Map<IRequestGameSessionFound>(e.InputAddress);
             });
         }
-        
+
         private static void AddConsumers(IServiceCollection services)
         {
             services.AddScoped<RequestGameDataConsumer>();
             services.AddScoped<RequestGameSessionFoundConsumer>();
             services.AddScoped<RequestGameSessionNotFoundConsumer>();
-            
+
             services.AddMassTransit(x =>
             {
                 // add the consumer to the container
@@ -138,6 +145,8 @@ namespace DealerBear
             services.AddScoped<IRequestGameData, RequestGameData>();
             services.AddScoped<IGameSessionFound, GameSessionFound>();
             services.AddScoped<IGameSessionNotFound, GameSessionNotFound>();
+            services.AddScoped<IGetCurrentGameState, GetCurrentGameState>();
+            services.AddScoped<ICreateGameState, CreateGameState>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

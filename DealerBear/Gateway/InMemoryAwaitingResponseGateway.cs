@@ -2,7 +2,7 @@ using DealerBear.Gateway.Interface;
 
 namespace DealerBear.Gateway
 {
-    public class InMemoryAwaitingResponseGateway:IAwaitingResponseGateway
+    public class InMemoryAwaitingResponseGateway : IAwaitingResponseGateway
     {
         public bool HasID(string uid)
         {
@@ -10,6 +10,11 @@ namespace DealerBear.Gateway
         }
 
         public void PopID(string uid)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SaveID(string uid)
         {
             throw new System.NotImplementedException();
         }

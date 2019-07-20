@@ -1,17 +1,49 @@
+using DealerBear.Exceptions;
+using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.CreateGameState.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using MassTransit;
-using Messages;
 
 namespace DealerBear.UseCases.GameSessionNotFound
 {
-    public class GameSessionNotFound:IGameSessionNotFound
+    public class GameSessionNotFound : IGameSessionNotFound
     {
-        public void Execute(IRequestGameSessionNotFound requestGameSessionNotFound, IPublishEndpoint publishEndPoint)
+        public void Execute(
+            IRequestGameSessionNotFound requestGameSessionNotFound, 
+            ICreateGameState createGameState,
+            IAwaitingResponseGateway responseGateway, 
+            IPublishEndpoint publishEndPoint)
         {
-            // TIME TO SORT OUT IDOOTENCY !!
-            // Only want to deal with this request once
-            // need a transaction id and a gateway to check 
-            throw new System.NotImplementedException();
+            if (InvalidMessageID(requestGameSessionNotFound))
+            {
+                throw new InvalidMessageIDException();
+            }
+            if (InvalidSessionID(requestGameSessionNotFound))
+            {
+                throw new InvalidSessionIDException();
+            }
+            
+            if (responseGateway.HasID(requestGameSessionNotFound.MessageID))
+            {
+                responseGateway.PopID(requestGameSessionNotFound.MessageID);
+                createGameState.Execute();
+            }
+            
+        }
+        
+        private static bool InvalidMessageID(IRequestGameSessionNotFound requestGameSessionNotFound)
+        {
+            return requestGameSessionNotFound.MessageID == null ||
+                   string.IsNullOrEmpty(requestGameSessionNotFound.MessageID) ||
+                   string.IsNullOrWhiteSpace(requestGameSessionNotFound.MessageID);
+        }
+        private static bool InvalidSessionID(IRequestGameSessionNotFound requestGameSessionNotFound)
+        {
+            return requestGameSessionNotFound.SessionID == null ||
+                   string.IsNullOrEmpty(requestGameSessionNotFound.SessionID) ||
+                   string.IsNullOrWhiteSpace(requestGameSessionNotFound.SessionID);
+            
         }
     }
 }

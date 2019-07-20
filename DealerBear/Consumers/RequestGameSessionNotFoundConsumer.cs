@@ -1,24 +1,35 @@
 using System;
 using System.Threading.Tasks;
+using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.CreateGameState.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
+using DealerBear.UseCases.GetCurrentGameState.Interface;
 using MassTransit;
-using Messages;
 
 namespace DealerBear.Consumers
 {
-    public class RequestGameSessionNotFoundConsumer:IConsumer<IRequestGameSessionNotFound>
+    public class RequestGameSessionNotFoundConsumer : IConsumer<IRequestGameSessionNotFound>
     {
         private readonly IGameSessionNotFound _gameSessionNotFoundUseCase;
+        private readonly ICreateGameState _createGameStateUseCase;
+        private readonly IAwaitingResponseGateway _awaitingResponseGateway;
 
-        public RequestGameSessionNotFoundConsumer(IGameSessionNotFound gameSessionNotFoundUseCase)
+
+        public RequestGameSessionNotFoundConsumer(
+            IGameSessionNotFound gameSessionNotFoundUseCase,
+            ICreateGameState createGameStateUseCase, 
+            IAwaitingResponseGateway awaitingResponseGateway)
+        
         {
-            Console.WriteLine("HELLOWRequestGameSessionNotFoundConsumer");
             _gameSessionNotFoundUseCase = gameSessionNotFoundUseCase;
+            _createGameStateUseCase = createGameStateUseCase;
+            _awaitingResponseGateway = awaitingResponseGateway;
         }
+
         public async Task Consume(ConsumeContext<IRequestGameSessionNotFound> context)
         {
-            Console.WriteLine("NOT FOUND");
-            _gameSessionNotFoundUseCase.Execute(context.Message,context);
+            _gameSessionNotFoundUseCase.Execute(context.Message,_createGameStateUseCase, _awaitingResponseGateway, context);
         }
     }
 }

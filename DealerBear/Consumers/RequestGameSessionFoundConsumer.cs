@@ -1,24 +1,33 @@
 using System;
 using System.Threading.Tasks;
-using DealerBear.UseCases.RequestGameSessionFound.Interface;
+using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.GameSessionFound.Interface;
+using DealerBear.UseCases.GetCurrentGameState.Interface;
 using MassTransit;
-using Messages;
 
 namespace DealerBear.Consumers
 {
-    public class RequestGameSessionFoundConsumer: IConsumer<IRequestGameSessionFound>
+    public class RequestGameSessionFoundConsumer : IConsumer<IRequestGameSessionFound>
     {
         private readonly IGameSessionFound _gameSessionFoundUseCase;
+        private readonly IGetCurrentGameState _getCurrentGameStateUseCase;
+        private readonly IAwaitingResponseGateway _awaitingResponseGateway;
 
-        public RequestGameSessionFoundConsumer(IGameSessionFound gameSessionFoundUseCase)
+        public RequestGameSessionFoundConsumer(
+            IGameSessionFound gameSessionFoundUseCase,
+            IGetCurrentGameState getCurrentGameStateUseCase, 
+            IAwaitingResponseGateway awaitingResponseGateway)
         {
-            Console.WriteLine("HeLLORequestGameSessionFoundConsumer");
             _gameSessionFoundUseCase = gameSessionFoundUseCase;
+            _getCurrentGameStateUseCase = getCurrentGameStateUseCase;
+            _awaitingResponseGateway = awaitingResponseGateway;
         }
+
         public async Task Consume(ConsumeContext<IRequestGameSessionFound> context)
         {
-            Console.WriteLine("FOUND");
-            _gameSessionFoundUseCase.Execute(context.Message,context);
+            _gameSessionFoundUseCase.Execute(context.Message, _getCurrentGameStateUseCase, _awaitingResponseGateway,
+                context);
         }
     }
 }
