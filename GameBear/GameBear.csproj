@@ -16,8 +16,4 @@
         <Folder Include="Controllers" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Messages\Messages.csproj" />
-    </ItemGroup>
-
 </Project>

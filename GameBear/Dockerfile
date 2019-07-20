@@ -2,18 +2,15 @@ FROM mcr.microsoft.com/dotnet/core/sdk:2.2 AS build-env
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY ./GameBear/*.csproj ./GameBear/
-COPY ./Messages/*.csproj ./Messages/
-COPY ./Messages/. ./Messages/
+COPY ./*.csproj ./GameBear/
 RUN dotnet restore ./GameBear
 
 # Copy everything else and build
-COPY ./GameBear/. ./GameBear/
+COPY ./. ./GameBear/
 RUN dotnet publish ./GameBear -c Release -o out
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:2.2
 WORKDIR /app
 COPY --from=build-env /app/GameBear/out .
-RUN ls
 ENTRYPOINT ["dotnet", "GameBear.dll"]

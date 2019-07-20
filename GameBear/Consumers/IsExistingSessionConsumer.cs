@@ -11,19 +11,19 @@ namespace GameBear.Consumers
     public class IsExistingSessionConsumer : IConsumer<IRequestGameIsSessionIDInUse>
     {
         private readonly IGameDataGateway _gameDataGateway;
+        private readonly IRequestGameCheckExistingSession _requestGameCheckExistingSessionUseCase;
 
-        public IsExistingSessionConsumer(IGameDataGateway gameDataGateway)
+        public IsExistingSessionConsumer(IGameDataGateway gameDataGateway,IRequestGameCheckExistingSession requestGameCheckExistingSessionUseCase )
         {
             Console.WriteLine("DataGateWay is null?" + (gameDataGateway == null));
             Console.WriteLine("DataGateWay type" + gameDataGateway.GetType());
             _gameDataGateway = gameDataGateway;
+            _requestGameCheckExistingSessionUseCase = requestGameCheckExistingSessionUseCase;
         }
 
         public async Task Consume(ConsumeContext<IRequestGameIsSessionIDInUse> context)
         {
-            IRequestGameCheckExistingSession useCase = new RequestGameCheckExistingSession();
-            Console.WriteLine("Recieved IRequestGameIsSessionIDInUse");
-            useCase.Execute(context.Message, _gameDataGateway, context);
+            _requestGameCheckExistingSessionUseCase.Execute(context.Message, _gameDataGateway, context);
         }
     }
 }

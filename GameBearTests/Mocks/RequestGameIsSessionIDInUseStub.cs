@@ -10,5 +10,6 @@ namespace GameBearTests.Mocks
         }
 
         public string SessionID { get; set; }
+        public string MessageID { get; set; }
     }
 }

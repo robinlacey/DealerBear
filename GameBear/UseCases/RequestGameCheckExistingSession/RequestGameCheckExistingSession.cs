@@ -1,3 +1,4 @@
+using System;
 using GameBear.Exceptions;
 using GameBear.Gateways.Interface;
 using GameBear.Messages;
@@ -19,10 +20,12 @@ namespace GameBear.UseCases.RequestGameCheckExistingSession
 
             if (gameDataGateway.IsExistingSession(requestGameIsSessionIDInUse.SessionID))
             {
+                Console.WriteLine("Publishing IRequestGameSessionFound ");
                 publishEndpoint.Publish(new RequestGameSessionFound {SessionID = requestGameIsSessionIDInUse.SessionID});
             }
             else
             {
+                Console.WriteLine("Publishing IRequestGameSessionNotFound ");
                 publishEndpoint.Publish(new RequestGameSessionNotFound {SessionID = requestGameIsSessionIDInUse.SessionID});
             }
         }

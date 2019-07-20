@@ -19,7 +19,7 @@ namespace DealerBearTests.UseCases
                 {
                     IRequestGameData requestGameData = new RequestGameData();
                     Assert.Throws<InvalidSessionIDException>(() =>
-                        requestGameData.Execute(new GameRequestStub(string.Empty), new PublishEndPointDummy()));
+                        requestGameData.Execute(new GameRequestStub(string.Empty), new AwaitingResponseGatewayDummy(), new PublishEndPointDummy()));
                 }
             }
 
@@ -30,7 +30,7 @@ namespace DealerBearTests.UseCases
                 {
                     IRequestGameData requestGameData = new RequestGameData();
                     Assert.Throws<InvalidSessionIDException>(() =>
-                        requestGameData.Execute(new GameRequestStub("    "), new PublishEndPointDummy()));
+                        requestGameData.Execute(new GameRequestStub("    "), new AwaitingResponseGatewayDummy(), new PublishEndPointDummy()));
                 }
             }
 
@@ -41,7 +41,7 @@ namespace DealerBearTests.UseCases
                 {
                     IRequestGameData requestGameData = new RequestGameData();
                     Assert.Throws<InvalidSessionIDException>(() =>
-                        requestGameData.Execute(new GameRequestStub(null), new PublishEndPointDummy()));
+                        requestGameData.Execute(new GameRequestStub(null), new AwaitingResponseGatewayDummy(),  new PublishEndPointDummy()));
                 }
             }
         }
@@ -54,11 +54,31 @@ namespace DealerBearTests.UseCases
                 PublishEndPointSpy spy = new PublishEndPointSpy();
                 IRequestGameData requestGameData = new RequestGameData();
                 string id = Guid.NewGuid().ToString();
-                requestGameData.Execute(new GameRequestStub(id), spy);
+                requestGameData.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
                 IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse = spy.MessageObject as IRequestGameIsSessionIDInUse;
                 Assert.IsNotNull(requestGameIsSessionIDInUse);
                 Assert.True(requestGameIsSessionIDInUse.SessionID == id);
             }
+            
+            [Test]
+            public void ThenUIDIsAddedToRequestAndSavedToAwaitingResponseGateway()
+            {
+                AwaitingResponseGatewaySpy gatewaySpy = new AwaitingResponseGatewaySpy(false);
+                PublishEndPointSpy publishSpy = new PublishEndPointSpy();
+                IRequestGameData requestGameData = new RequestGameData();
+                string id = Guid.NewGuid().ToString();
+                requestGameData.Execute(new GameRequestStub(id), gatewaySpy, publishSpy);
+                
+                IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse = publishSpy.MessageObject as IRequestGameIsSessionIDInUse;
+                Assert.NotNull(requestGameIsSessionIDInUse);
+                
+                string transactionUID = requestGameIsSessionIDInUse.MessageID;
+                Assert.False(string.IsNullOrEmpty(transactionUID) || string.IsNullOrWhiteSpace(transactionUID) || transactionUID == null);
+                Assert.True(requestGameIsSessionIDInUse.MessageID == id);
+                Assert.True(gatewaySpy.HasUIDInput == transactionUID);
+                
+            }
+            
         }
 
         public class IdopotentTests

@@ -10,6 +10,7 @@ namespace IntegrationCore
     {
         public static int Main(string[] args)
         {
+            System.Threading.Thread.Sleep(20000);
             IBusControl bus = SetupRabbitMQ();
             bus.Start();
 

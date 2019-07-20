@@ -1,5 +1,6 @@
 using System;
 using DealerBear.Exceptions;
+using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.RequestGameData.Interface;
 using MassTransit;
@@ -9,13 +10,13 @@ namespace DealerBear.UseCases.RequestGameData
 {
     public class RequestGameData : IRequestGameData
     {
-        public void Execute(IGameRequest gameRequest, IPublishEndpoint publishEndPoint)
+        public void Execute(IGameRequest gameRequest, IAwaitingResponseGateway responseGateway, IPublishEndpoint publishEndPoint)
         {
             if (InvalidSessionID(gameRequest))
             {
                 throw new InvalidSessionIDException();
             }
-            Console.WriteLine("Publishing RequestGameIsSessionIDInUse");
+            Console.WriteLine("Publishing IRequestGameIsSessionIDInUse");
             publishEndPoint.Publish(new RequestGameIsSessionIDInUse {SessionID = gameRequest.SessionID});
         }
 
