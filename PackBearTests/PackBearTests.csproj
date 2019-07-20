@@ -13,6 +13,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\Messages\Messages.csproj" />
         <ProjectReference Include="..\PackBear\PackBear.csproj" />
     </ItemGroup>
 

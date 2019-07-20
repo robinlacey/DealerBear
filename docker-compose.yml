@@ -4,8 +4,8 @@ services:
     environment:
       RABBITMQ_HOST : rabbitmq
     build:
-      context: ./DealerBear
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.dealerbear
     links: 
         - rabbitmq
     depends_on:
@@ -14,8 +14,8 @@ services:
     environment:
       RABBITMQ_HOST : rabbitmq
     build:
-      context: ./GameBear
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.gamebear
     depends_on:
         - rabbitmq
     links: 
@@ -23,8 +23,8 @@ services:
 
   packbear:
     build:
-      context: ./PackBear
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.packbear
     depends_on:
         - rabbitmq
     links: 
@@ -41,8 +41,8 @@ services:
     environment:
       RABBITMQ_HOST : rabbitmq
     build:
-      context: ./IntegrationTests
-      dockerfile: Dockerfile
+      context: ./
+      dockerfile: Dockerfile.integration
     depends_on:
         - dealerbear
         - gamebear

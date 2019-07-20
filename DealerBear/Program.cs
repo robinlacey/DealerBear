@@ -1,20 +1,27 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Logging;
+﻿using System;
+using DealerBear.Consumers;
+using MassTransit;
+using MassTransit.RabbitMqTransport;
 
 namespace DealerBear
 {
-    public class Program
+    class Program
     {
-        public static void Main(string[] args)
+        static void Main(string[] args)
         {
-            BuildWebHost(args).Run();
+            Console.WriteLine("Hello DealerBear!");
+            string rabbitMQHost = $"rabbitmq://{Environment.GetEnvironmentVariable("RABBITMQ_HOST")}";
+            IBusControl bus = Bus.Factory.CreateUsingRabbitMq(sbc =>
+            {
+                IRabbitMqHost host = sbc.Host(new Uri(rabbitMQHost), h =>
+                {
+                    h.Username("guest");
+                    h.Password("guest");
+                });
+                sbc.ReceiveEndpoint(host, "RequestGameData",
+                    ep => { ep.Consumer(() => new RequestGameDataConsumer()); });
+            });
+            bus.Start();
         }
-
-        public static IWebHost BuildWebHost(string[] args) =>
-            WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>()
-                .ConfigureLogging(builder => { builder.AddFilter("MassTransit", LogLevel.Debug); })
-                .Build();
     }
 }

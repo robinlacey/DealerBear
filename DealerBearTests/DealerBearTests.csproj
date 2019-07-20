@@ -17,7 +17,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\DealerBear\DealerBear.csproj" />
+        <ProjectReference Include="..\DealerBear\DealerBear.csproj" />
     </ItemGroup>
 
 </Project>
