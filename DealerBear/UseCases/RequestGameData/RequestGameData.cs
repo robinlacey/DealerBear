@@ -1,4 +1,3 @@
-using System;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
 using DealerBear.UseCases.RequestGameData.Interface;
@@ -15,8 +14,8 @@ namespace DealerBear.UseCases.RequestGameData
             {
                 throw new InvalidSessionIDException();
             }
-            Console.WriteLine("Publishing RequestGameIsSessionIDInUse");
-            publishEndPoint.Publish(new RequestGameIsSessionIDInUse {SessionID = gameRequest.SessionID});
+
+            publishEndPoint.Publish(new IsSessionIDInUse {SessionID = gameRequest.SessionID});
         }
 
         private static bool InvalidSessionID(IGameRequest gameRequest)

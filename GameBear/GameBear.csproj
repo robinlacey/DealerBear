@@ -13,11 +13,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="Controllers" />
+      <Folder Include="Controllers" />
+      <Folder Include="Messages" />
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Messages\Messages.csproj" />
+      <ProjectReference Include="..\Messages\Messages.csproj" />
     </ItemGroup>
 
 </Project>
