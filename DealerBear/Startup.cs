@@ -9,6 +9,8 @@ using DealerBear.UseCases.GameSessionFound;
 using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
+using DealerBear.UseCases.GenerateSeed;
+using DealerBear.UseCases.GenerateSeed.Interface;
 using DealerBear.UseCases.GetCurrentGameState;
 using DealerBear.UseCases.GetCurrentGameState.Interface;
 using DealerBear.UseCases.RequestGameData;
@@ -67,6 +69,7 @@ namespace DealerBear
         private static void AddGateways(IServiceCollection services)
         {
             services.AddSingleton<IAwaitingResponseGateway, InMemoryAwaitingResponseGateway>();
+            services.AddSingleton<IPackVersionGateway, InMemoryPackVersionGateway>();
         }
 
         private static void SetEndPoints(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
@@ -75,6 +78,7 @@ namespace DealerBear
             SetEndpointForGameRequest(cfg, host, provider);
             SetEndpointForRequestGameSessionNotFound(cfg, host, provider);
             SetEndpointForRequestGameSessionFound(cfg, host, provider);
+            SetEndpointForPackNumberUpdating(cfg, host, provider);
         }
 
         private static void AddRequestClients(IServiceCollection services)
@@ -85,6 +89,8 @@ namespace DealerBear
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestGameSessionNotFound>());
             services.AddScoped(provider =>
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestGameSessionFound>());
+            services.AddScoped(provider =>
+                provider.GetRequiredService<IBus>().CreateRequestClient<IRequestPackNumberUpdated>());
         }
 
         private static void SetEndpointForGameRequest(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
@@ -96,6 +102,19 @@ namespace DealerBear
                 e.UseMessageRetry(x => x.Interval(2, 100));
                 e.Consumer<RequestGameDataConsumer>(provider);
                 EndpointConvention.Map<IGameRequest>(e.InputAddress);
+            });
+        }
+
+
+        private static void SetEndpointForPackNumberUpdating(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
+            IServiceProvider provider)
+        {
+            cfg.ReceiveEndpoint(host, "PackNumberUpdated", e =>
+            {
+                e.PrefetchCount = 16;
+                e.UseMessageRetry(x => x.Interval(2, 100));
+                e.Consumer<RequestPackVersionUpdatedConsumer>(provider);
+                EndpointConvention.Map<IRequestPackNumberUpdated>(e.InputAddress);
             });
         }
 
@@ -147,6 +166,7 @@ namespace DealerBear
             services.AddScoped<IGameSessionNotFound, GameSessionNotFound>();
             services.AddScoped<IGetCurrentGameState, GetCurrentGameState>();
             services.AddScoped<ICreateGameState, CreateGameState>();
+            services.AddScoped<IGenerateSeed, GenerateSeed>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

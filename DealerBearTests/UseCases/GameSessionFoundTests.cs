@@ -1,4 +1,3 @@
-using System;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
 using DealerBear.UseCases.GameSessionFound;
@@ -133,7 +132,8 @@ namespace DealerBearTests.UseCases
                     IGetCurrentGameState getCurrentGameStateDummy = new GetCurrentGameStateDummy();
                     IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    Assert.Throws<InvalidSessionIDException>(()=>gameSessionFoundUseCase.Execute(message, getCurrentGameStateDummy, spy, publishEndPointDummy));
+                    Assert.Throws<InvalidSessionIDException>(() =>
+                        gameSessionFoundUseCase.Execute(message, getCurrentGameStateDummy, spy, publishEndPointDummy));
                 }
             }
 
@@ -150,7 +150,8 @@ namespace DealerBearTests.UseCases
                     IGetCurrentGameState getCurrentGameStateDummy = new GetCurrentGameStateDummy();
                     IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    Assert.Throws<InvalidMessageIDException>(()=>gameSessionFoundUseCase.Execute(message, getCurrentGameStateDummy, spy, publishEndPointDummy));
+                    Assert.Throws<InvalidMessageIDException>(() =>
+                        gameSessionFoundUseCase.Execute(message, getCurrentGameStateDummy, spy, publishEndPointDummy));
                 }
             }
         }

@@ -2,8 +2,7 @@ using System;
 
 namespace DealerBear.Exceptions
 {
-    public class InvalidMessageIDException:Exception
+    public class InvalidMessageIDException : Exception
     {
-        
     }
 }

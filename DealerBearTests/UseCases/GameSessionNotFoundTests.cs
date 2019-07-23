@@ -3,9 +3,6 @@ using DealerBear.Messages;
 using DealerBear.UseCases.CreateGameState.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
-using DealerBear.UseCases.GameSessionNotFound;
-using DealerBear.UseCases.GameSessionNotFound.Interface;
-using DealerBear.UseCases.GetCurrentGameState.Interface;
 using DealerBearTests.Mocks;
 using MassTransit;
 using NUnit.Framework;
@@ -14,7 +11,6 @@ namespace DealerBearTests.UseCases
 {
     public class GameSessionNotFoundTests
     {
-        
         public class GivenValidInput
         {
             public class WhenMessageIDIsInAwaitingResponseGateway
@@ -35,11 +31,9 @@ namespace DealerBearTests.UseCases
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
                     IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", messageID);
 
-                    ICreateGameState createGameStateDummy = new CreateGameStateDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
-
-                    gameSessionFoundUseCase.Execute(message, createGameStateDummy, _awaitingResponseGatewaySpy,
-                        publishEndPointDummy);
+                    gameSessionFoundUseCase.Execute(message,
+                        new CreateGameStateDummy(), _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(),
+                        new GenerateSeedDummy(), new PublishEndPointDummy());
 
                     Assert.True(_awaitingResponseGatewaySpy.HasIDInput == messageID);
                 }
@@ -52,11 +46,10 @@ namespace DealerBearTests.UseCases
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
                     IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", messageID);
 
-                    ICreateGameState createGameStateDummy = new CreateGameStateDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    gameSessionFoundUseCase.Execute(message, createGameStateDummy, _awaitingResponseGatewaySpy,
-                        publishEndPointDummy);
+                    gameSessionFoundUseCase.Execute(message, new CreateGameStateDummy(),
+                        _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(), new GenerateSeedDummy(),
+                        new PublishEndPointDummy());
 
                     Assert.True(_awaitingResponseGatewaySpy.PopIDInput == messageID);
                 }
@@ -70,10 +63,10 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", messageID);
 
                     CreateGameStateSpy createGameStateSpy = new CreateGameStateSpy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    gameSessionFoundUseCase.Execute(message, createGameStateSpy, _awaitingResponseGatewaySpy,
-                        publishEndPointDummy);
+                    gameSessionFoundUseCase.Execute(message,
+                        createGameStateSpy, _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(),
+                        new GenerateSeedDummy(), new PublishEndPointDummy());
 
                     Assert.True(createGameStateSpy.ExecuteCalled);
                 }
@@ -97,10 +90,10 @@ namespace DealerBearTests.UseCases
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
                     IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", messageID);
                     ICreateGameState createGameStateDummy = new CreateGameStateDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    gameSessionFoundUseCase.Execute(message, createGameStateDummy, _awaitingResponseGatewaySpy,
-                        publishEndPointDummy);
+                    gameSessionFoundUseCase.Execute(message, createGameStateDummy,
+                        _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(), new GenerateSeedDummy(),
+                        new PublishEndPointDummy());
 
                     Assert.True(_awaitingResponseGatewaySpy.HasIDInput == messageID);
                 }
@@ -109,18 +102,19 @@ namespace DealerBearTests.UseCases
                 public void ThenGetGameStateGameUseCaseIsNotExecuted()
                 {
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", "Message ID");
+                    IRequestGameSessionNotFound
+                        message = new RequestGameSessionNotFoundStub("Session ID", "Message ID");
                     CreateGameStateSpy getCurrentGameStateSpy = new CreateGameStateSpy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    gameSessionFoundUseCase.Execute(message, getCurrentGameStateSpy, _awaitingResponseGatewaySpy,
-                        publishEndPointDummy);
+                    gameSessionFoundUseCase.Execute(message, getCurrentGameStateSpy,
+                        new AwaitingResponseGatewayDummy(), new PackVersionGatewayDummy(), new GenerateSeedDummy(),
+                        new PublishEndPointDummy());
 
                     Assert.False(getCurrentGameStateSpy.ExecuteCalled);
                 }
             }
         }
-              
+
         public class GivenInvalidInput
         {
             public class WhenSessionIDIsInvalid
@@ -131,12 +125,13 @@ namespace DealerBearTests.UseCases
                 public void ThenThrowsInvalidSessionIDException(string invalidInput)
                 {
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub(invalidInput, "Message ID");
+                    IRequestGameSessionNotFound
+                        message = new RequestGameSessionNotFoundStub(invalidInput, "Message ID");
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
-                    ICreateGameState createGameStateDummy = new CreateGameStateDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    Assert.Throws<InvalidSessionIDException>(()=>gameSessionFoundUseCase.Execute(message, createGameStateDummy, spy, publishEndPointDummy));
+                    Assert.Throws<InvalidSessionIDException>(() => gameSessionFoundUseCase.Execute(
+                        message, new CreateGameStateDummy(), spy, new PackVersionGatewayDummy(),
+                        new GenerateSeedDummy(), new PublishEndPointDummy()));
                 }
             }
 
@@ -148,12 +143,15 @@ namespace DealerBearTests.UseCases
                 public void ThenThrowsInvalidMessageIDException(string invalidInput)
                 {
                     IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IRequestGameSessionNotFound message = new RequestGameSessionNotFoundStub("Session ID", invalidInput);
+                    IRequestGameSessionNotFound
+                        message = new RequestGameSessionNotFoundStub("Session ID", invalidInput);
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
                     ICreateGameState createGameStateDummy = new CreateGameStateDummy();
                     IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
 
-                    Assert.Throws<InvalidMessageIDException>(()=>gameSessionFoundUseCase.Execute(message, createGameStateDummy, spy, publishEndPointDummy));
+                    Assert.Throws<InvalidMessageIDException>(() => gameSessionFoundUseCase.Execute(
+                        message, createGameStateDummy, spy,
+                        new PackVersionGatewayDummy(), new GenerateSeedDummy(), new PublishEndPointDummy()));
                 }
             }
         }

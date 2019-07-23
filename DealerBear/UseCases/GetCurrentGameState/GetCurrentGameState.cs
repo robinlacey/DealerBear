@@ -2,7 +2,7 @@ using DealerBear.UseCases.GetCurrentGameState.Interface;
 
 namespace DealerBear.UseCases.GetCurrentGameState
 {
-    public class GetCurrentGameState:IGetCurrentGameState
+    public class GetCurrentGameState : IGetCurrentGameState
     {
         public void Execute()
         {

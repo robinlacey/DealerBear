@@ -1,4 +1,3 @@
-using System;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
@@ -20,23 +19,26 @@ namespace DealerBear.UseCases.GameSessionFound
             {
                 throw new InvalidMessageIDException();
             }
+
             if (InvalidSessionID(requestGameSessionFound))
             {
                 throw new InvalidSessionIDException();
             }
-            
+
             if (responseGateway.HasID(requestGameSessionFound.MessageID))
             {
                 responseGateway.PopID(requestGameSessionFound.MessageID);
                 getCurrentGameStateUseCase.Execute();
             }
         }
+
         private static bool InvalidMessageID(IRequestGameSessionFound requestGameSessionFound)
         {
             return requestGameSessionFound.MessageID == null ||
                    string.IsNullOrEmpty(requestGameSessionFound.MessageID) ||
                    string.IsNullOrWhiteSpace(requestGameSessionFound.MessageID);
         }
+
         private static bool InvalidSessionID(IRequestGameSessionFound requestGameSessionFound)
         {
             return requestGameSessionFound.SessionID == null ||

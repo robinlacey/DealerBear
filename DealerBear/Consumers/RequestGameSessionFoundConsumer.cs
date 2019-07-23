@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
@@ -16,7 +15,7 @@ namespace DealerBear.Consumers
 
         public RequestGameSessionFoundConsumer(
             IGameSessionFound gameSessionFoundUseCase,
-            IGetCurrentGameState getCurrentGameStateUseCase, 
+            IGetCurrentGameState getCurrentGameStateUseCase,
             IAwaitingResponseGateway awaitingResponseGateway)
         {
             _gameSessionFoundUseCase = gameSessionFoundUseCase;
