@@ -9,6 +9,7 @@ namespace DealerBear.UseCases.CreateGameState.Interface
         void Execute(
             string sessionID,
             IPackVersionGateway packVersionGateway,
+            IAwaitingResponseGateway awaitingResponseGateway,
             IGenerateSeed generateSeedUseCase,
             IPublishEndpoint publishEndPoint);
     }

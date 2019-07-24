@@ -9,7 +9,7 @@ namespace DealerBearTests.Mocks
     {
         public bool ExecuteCalled { get; private set; }
 
-        public void Execute(string sessionID, IPackVersionGateway packVersionGateway, IGenerateSeed generateSeedUseCase,
+        public void Execute(string sessionID, IPackVersionGateway packVersionGateway,IAwaitingResponseGateway awaitingResponseGateway,  IGenerateSeed generateSeedUseCase,
             IPublishEndpoint publishEndPoint)
         {
             ExecuteCalled = true;

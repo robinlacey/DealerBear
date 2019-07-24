@@ -1,12 +1,13 @@
+using System;
 using DealerBear.UseCases.GenerateSeed.Interface;
 
 namespace DealerBear.UseCases.GenerateSeed
 {
     public class GenerateSeed : IGenerateSeed
     {
-        public float Execute()
+        public int Execute()
         {
-            throw new System.NotImplementedException();
+            return new Random().Next(int.MinValue,int.MaxValue);
         }
     }
 }

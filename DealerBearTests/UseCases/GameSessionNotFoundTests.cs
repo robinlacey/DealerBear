@@ -72,6 +72,7 @@ namespace DealerBearTests.UseCases
                 }
             }
 
+            // Idempotent
             public class WhenMessageIDIsNotInAwaitingResponseGateway
             {
                 private AwaitingResponseGatewaySpy _awaitingResponseGatewaySpy;
@@ -112,6 +113,22 @@ namespace DealerBearTests.UseCases
 
                     Assert.False(getCurrentGameStateSpy.ExecuteCalled);
                 }
+                
+                [Test]
+                public void ThenNewMessageIDIsCreatedAndAddedToAwaitingResponseGateway()
+                {
+                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
+                    IRequestGameSessionNotFound
+                        message = new RequestGameSessionNotFoundStub("Session ID", "Message ID");
+                    CreateGameStateSpy getCurrentGameStateSpy = new CreateGameStateSpy();
+
+                    gameSessionFoundUseCase.Execute(message, getCurrentGameStateSpy,
+                        new AwaitingResponseGatewayDummy(), new PackVersionGatewayDummy(), new GenerateSeedDummy(),
+                        new PublishEndPointDummy());
+
+                    Assert.False(getCurrentGameStateSpy.ExecuteCalled);
+                }
+                
             }
         }
 

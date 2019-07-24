@@ -31,7 +31,7 @@ namespace DealerBear.UseCases.GameSessionNotFound
             if (responseGateway.HasID(requestGameSessionNotFound.MessageID))
             {
                 responseGateway.PopID(requestGameSessionNotFound.MessageID);
-                createGameState.Execute(requestGameSessionNotFound.SessionID, packVersionGateway, generateSeed,
+                createGameState.Execute(requestGameSessionNotFound.SessionID, packVersionGateway,responseGateway, generateSeed,
                     publishEndPoint);
             }
         }

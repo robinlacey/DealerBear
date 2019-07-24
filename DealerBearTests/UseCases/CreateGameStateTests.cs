@@ -22,7 +22,7 @@ namespace DealerBearTests.UseCases
                     ICreateGameState createGameState = new CreateGameState();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
                     Assert.Throws<InvalidSessionIDException>(() => createGameState.Execute(sessionID,
-                        new PackVersionGatewayDummy(), new GenerateSeedDummy(), publishEndPointSpy));
+                        new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(), publishEndPointSpy));
                 }
             }
         }
@@ -37,7 +37,7 @@ namespace DealerBearTests.UseCases
                 {
                     ICreateGameState createGameState = new CreateGameState();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createGameState.Execute(sessionID, new PackVersionGatewayDummy(), new GenerateSeedDummy(),
+                    createGameState.Execute(sessionID, new PackVersionGatewayDummy(), new AwaitingResponseGatewayDummy(), new GenerateSeedDummy(),
                         publishEndPointSpy);
                     Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
                     ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
@@ -55,7 +55,7 @@ namespace DealerBearTests.UseCases
                     ICreateGameState createGameState = new CreateGameState();
                     PackVersionGatewayStub stub = new PackVersionGatewayStub(version);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createGameState.Execute("SessionID", stub, new GenerateSeedDummy(), publishEndPointSpy);
+                    createGameState.Execute("SessionID", stub,new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(),  publishEndPointSpy);
                     Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
                     ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
                     Assert.True(newGameData.PackVersionNumber == version);
@@ -65,17 +65,46 @@ namespace DealerBearTests.UseCases
             public class WhenGenerateSeedUseCaseIsCalled
             {
                 [TestCase(12351241)]
-                [TestCase(1.1231415f)]
-                [TestCase(-0.1276767f)]
-                public void ThenValueIsSavedToCreateGameGateway(float seedGeneratorReturnValue)
+                [TestCase(532452345)]
+                [TestCase(-234)]
+                public void ThenValueIsSavedToCreateGameGateway(int seedGeneratorReturnValue)
                 {
                     ICreateGameState createGameState = new CreateGameState();
                     GenerateSeedStub stub = new GenerateSeedStub(seedGeneratorReturnValue);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createGameState.Execute("SessionID", new PackVersionGatewayDummy(), stub, publishEndPointSpy);
+                    createGameState.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  stub, publishEndPointSpy);
                     Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
                     ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
                     Assert.True(Math.Abs(newGameData.Seed - seedGeneratorReturnValue) < 0.1f);
+                }
+            }
+            
+            //Idempotent
+            public class WhenMessageIDIsGenerated
+            {
+                [Test]
+                public void ThenNewMessageIDIsGUID()
+                {
+                    ICreateGameState createGameState = new CreateGameState();
+                    GenerateSeedStub stub = new GenerateSeedStub(0);
+                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                    createGameState.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(), stub, publishEndPointSpy);
+                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
+                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
+                    Assert.True(Guid.TryParse(newGameData.MessageID, out Guid _));
+                }
+
+                [Test]
+                public void ThenNewMessageIdIsAddedToAwaitingResponseGateway()
+                {
+                    ICreateGameState createGameState = new CreateGameState();
+                    GenerateSeedStub stub = new GenerateSeedStub(0);
+                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                    AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(true);
+                    createGameState.Execute("SessionID", new PackVersionGatewayDummy(),spy, stub, publishEndPointSpy);
+                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
+                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
+                    Assert.True(spy.SaveIDInput == newGameData.MessageID);
                 }
             }
         }

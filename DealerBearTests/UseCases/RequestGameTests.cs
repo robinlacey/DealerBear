@@ -59,6 +59,18 @@ namespace DealerBearTests.UseCases
                              string.IsNullOrWhiteSpace(requestGameIsSessionIDInUse.MessageID));
                 Assert.True(requestGameIsSessionIDInUse.MessageID == gatewaySpy.SaveIDInput);
             }
+            [Test]
+            public void ThenNewMessageIDIsGUID()
+            {
+                PublishEndPointSpy spy = new PublishEndPointSpy();
+                IRequestGameData requestGameData = new RequestGameData();
+                string id = Guid.NewGuid().ToString();
+                requestGameData.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
+                IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse =
+                    spy.MessageObject as IRequestGameIsSessionIDInUse;
+                Assert.IsNotNull(requestGameIsSessionIDInUse);
+                Assert.True(Guid.TryParse(requestGameIsSessionIDInUse.MessageID, out Guid _));
+            }
         }
     }
 }

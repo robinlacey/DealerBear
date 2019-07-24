@@ -7,7 +7,7 @@ namespace DealerBearTests.Mocks
 {
     public class CreateGameStateDummy : ICreateGameState
     {
-        public void Execute(string sessionID, IPackVersionGateway packVersionGateway, IGenerateSeed generateSeedUseCase,
+        public void Execute(string sessionID, IPackVersionGateway packVersionGateway, IAwaitingResponseGateway awaitingResponseGateway, IGenerateSeed generateSeedUseCase,
             IPublishEndpoint publishEndPoint)
         {
         }

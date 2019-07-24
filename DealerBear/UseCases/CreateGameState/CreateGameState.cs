@@ -1,3 +1,4 @@
+using System;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
@@ -9,7 +10,11 @@ namespace DealerBear.UseCases.CreateGameState
 {
     public class CreateGameState : ICreateGameState
     {
-        public void Execute(string sessionID, IPackVersionGateway packVersionGateway, IGenerateSeed generateSeedUseCase,
+        public void Execute(
+            string sessionID, 
+            IPackVersionGateway packVersionGateway, 
+            IAwaitingResponseGateway awaitingResponseGateway,
+            IGenerateSeed generateSeedUseCase,
             IPublishEndpoint publishEndPoint)
         {
             if (InvalidSessionID(sessionID))
@@ -17,12 +22,15 @@ namespace DealerBear.UseCases.CreateGameState
                 throw new InvalidSessionIDException();
             }
 
+            string messageID = Guid.NewGuid().ToString();
             publishEndPoint.Publish(new CreateNewGameData
             {
+                MessageID = messageID,
                 SessionID = sessionID,
                 PackVersionNumber = packVersionGateway.GetCurrentPackVersion(),
-                Seed = generateSeedUseCase.Execute()
+                Seed = generateSeedUseCase.Execute(),
             });
+            awaitingResponseGateway.SaveID(messageID);
         }
 
 

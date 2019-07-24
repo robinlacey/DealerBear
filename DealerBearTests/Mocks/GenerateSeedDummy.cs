@@ -4,6 +4,6 @@ namespace DealerBearTests.Mocks
 {
     public class GenerateSeedDummy : IGenerateSeed
     {
-        public float Execute() => 0;
+        public int Execute() => 0;
     }
 }

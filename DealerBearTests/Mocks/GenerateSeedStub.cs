@@ -4,13 +4,13 @@ namespace DealerBearTests.Mocks
 {
     public class GenerateSeedStub : IGenerateSeed
     {
-        private readonly float _seedReturnValue;
+        private readonly int _seedReturnValue;
 
-        public GenerateSeedStub(float seedReturnValue)
+        public GenerateSeedStub(int seedReturnValue)
         {
             _seedReturnValue = seedReturnValue;
         }
 
-        public float Execute() => _seedReturnValue;
+        public int Execute() => _seedReturnValue;
     }
 }
