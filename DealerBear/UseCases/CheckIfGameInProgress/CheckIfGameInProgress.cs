@@ -1,16 +1,16 @@
 using System;
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.CheckIfGameInProgress.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.CheckIfGameInProgress
 {
     public class CheckIfGameInProgress : ICheckIfGameInProgress
     {
         public void Execute(IGameRequest gameRequest, IAwaitingResponseGateway responseGateway,
-            IPublishEndpoint publishEndPoint)
+            IPublishMessageAdaptor publishEndPoint)
         {
             if (InvalidSessionID(gameRequest))
             {

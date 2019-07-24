@@ -1,9 +1,9 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GetGameInProgress.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.GameSessionFound
 {
@@ -13,7 +13,7 @@ namespace DealerBear.UseCases.GameSessionFound
             IRequestGameSessionFound requestGameSessionFound,
             IGetGameInProgress getGameInProgressUseCase,
             IAwaitingResponseGateway awaitingResponseGateway,
-            IPublishEndpoint publishEndPoint)
+            IPublishMessageAdaptor publishEndPoint)
         {
             if (InvalidMessageID(requestGameSessionFound))
             {

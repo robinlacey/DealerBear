@@ -1,5 +1,5 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Gateway.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.GetGameInProgress.Interface
 {
@@ -8,6 +8,6 @@ namespace DealerBear.UseCases.GetGameInProgress.Interface
         void Execute(
             string sessionID,
             IAwaitingResponseGateway awaitingResponseGateway,
-            IPublishEndpoint publishEndPoint);
+            IPublishMessageAdaptor publishEndPoint);
     }
 }

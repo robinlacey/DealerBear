@@ -1,6 +1,6 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Gateway.Interface;
 using DealerBear.UseCases.GetGameInProgress.Interface;
-using MassTransit;
 
 namespace DealerBearTests.Mocks
 {
@@ -8,7 +8,7 @@ namespace DealerBearTests.Mocks
     {
         public bool ExecuteCalled { get; private set; }
 
-        public void Execute(string sessionID, IAwaitingResponseGateway awaitingResponseGateway, IPublishEndpoint publishEndPoint)
+        public void Execute(string sessionID, IAwaitingResponseGateway awaitingResponseGateway, IPublishMessageAdaptor publishEndPoint)
         {
             ExecuteCalled = true;
         }

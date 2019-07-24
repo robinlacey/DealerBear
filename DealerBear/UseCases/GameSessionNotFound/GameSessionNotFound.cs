@@ -1,10 +1,10 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.GameSessionNotFound
 {
@@ -16,7 +16,7 @@ namespace DealerBear.UseCases.GameSessionNotFound
             IAwaitingResponseGateway responseGateway,
             IPackVersionGateway packVersionGateway,
             IGenerateSeed generateSeed,
-            IPublishEndpoint publishEndPoint)
+            IPublishMessageAdaptor publishEndPoint)
         {
             if (InvalidMessageID(gameSessionNotFoundRequest))
             {

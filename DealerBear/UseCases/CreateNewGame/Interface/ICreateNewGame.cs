@@ -1,6 +1,6 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Gateway.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.CreateNewGame.Interface
 {
@@ -11,6 +11,6 @@ namespace DealerBear.UseCases.CreateNewGame.Interface
             IPackVersionGateway packVersionGateway,
             IAwaitingResponseGateway awaitingResponseGateway,
             IGenerateSeed generateSeedUseCase,
-            IPublishEndpoint publishEndPoint);
+            IPublishMessageAdaptor publishEndPoint);
     }
 }
