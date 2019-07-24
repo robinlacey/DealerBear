@@ -1,5 +1,3 @@
-using Messages;
-
 namespace DealerBear.Messages
 {
     public class RequestGameIsSessionIDInUse : IRequestGameIsSessionIDInUse

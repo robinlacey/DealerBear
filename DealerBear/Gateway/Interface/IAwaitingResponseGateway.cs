@@ -4,5 +4,6 @@ namespace DealerBear.Gateway.Interface
     {
         bool HasID(string uid);
         void PopID(string uid);
+        void SaveID(string uid);
     }
 }

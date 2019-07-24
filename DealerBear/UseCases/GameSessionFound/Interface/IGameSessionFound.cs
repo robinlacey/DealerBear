@@ -1,10 +1,13 @@
+using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.GetGameInProgress.Interface;
 using MassTransit;
-using Messages;
 
-namespace DealerBear.UseCases.RequestGameSessionFound.Interface
+namespace DealerBear.UseCases.GameSessionFound.Interface
 {
     public interface IGameSessionFound
     {
-        void Execute(IRequestGameSessionFound requestGameSessionFound, IPublishEndpoint publishEndPoint);
+        void Execute(IRequestGameSessionFound requestGameSessionFound, IGetGameInProgress getGameInProgressUseCase,
+            IAwaitingResponseGateway awaitingResponseGateway, IPublishEndpoint publishEndPoint);
     }
 }

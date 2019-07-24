@@ -1,10 +1,19 @@
+using DealerBear.Gateway.Interface;
+using DealerBear.Messages;
+using DealerBear.UseCases.CreateNewGame.Interface;
+using DealerBear.UseCases.GenerateSeed.Interface;
 using MassTransit;
-using Messages;
 
 namespace DealerBear.UseCases.GameSessionNotFound.Interface
 {
     public interface IGameSessionNotFound
     {
-        void Execute(IRequestGameSessionNotFound requestGameSessionNotFound, IPublishEndpoint publishEndPoint);
+        void Execute(
+            IGameSessionNotFoundRequest gameSessionNotFoundRequest,
+            ICreateNewGame createNewGame,
+            IAwaitingResponseGateway responseGateway,
+            IPackVersionGateway packVersionGateway,
+            IGenerateSeed generateSeed,
+            IPublishEndpoint publishEndPoint);
     }
 }

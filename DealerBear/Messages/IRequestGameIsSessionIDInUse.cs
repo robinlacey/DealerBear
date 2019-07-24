@@ -1,4 +1,4 @@
-namespace Messages
+namespace DealerBear.Messages
 {
     public interface IRequestGameIsSessionIDInUse
     {
