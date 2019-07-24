@@ -3,18 +3,18 @@ using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using MassTransit;
 
-namespace DealerBear.Consumers
+namespace DealerBear.Consumers.Services.AdHoc
 {
-    public class RequestPackVersionUpdatedConsumer : IConsumer<IRequestPackNumberUpdated>
+    public class PackVersionUpdatedConsumer : IConsumer<IRequestPackVersionNumberUpdated>
     {
         private readonly IPackVersionGateway _gateway;
 
-        public RequestPackVersionUpdatedConsumer(IPackVersionGateway gateway)
+        public PackVersionUpdatedConsumer(IPackVersionGateway gateway)
         {
             _gateway = gateway;
         }
 
-        public async Task Consume(ConsumeContext<IRequestPackNumberUpdated> context)
+        public async Task Consume(ConsumeContext<IRequestPackVersionNumberUpdated> context)
         {
             _gateway.SetCurrentPackVersion(context.Message.PackNumber);
         }

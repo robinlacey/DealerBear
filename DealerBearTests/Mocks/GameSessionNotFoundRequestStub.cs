@@ -2,9 +2,9 @@ using DealerBear.Messages;
 
 namespace DealerBearTests.Mocks
 {
-    public class RequestGameSessionNotFoundStub : IRequestGameSessionNotFound
+    public class GameSessionNotFoundRequestStub : IGameSessionNotFoundRequest
     {
-        public RequestGameSessionNotFoundStub(string sessionID, string messageID)
+        public GameSessionNotFoundRequestStub(string sessionID, string messageID)
         {
             SessionID = sessionID;
             MessageID = messageID;

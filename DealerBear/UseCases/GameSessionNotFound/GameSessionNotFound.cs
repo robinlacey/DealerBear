@@ -1,7 +1,7 @@
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
-using DealerBear.UseCases.CreateGameState.Interface;
+using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
 using MassTransit;
@@ -11,43 +11,43 @@ namespace DealerBear.UseCases.GameSessionNotFound
     public class GameSessionNotFound : IGameSessionNotFound
     {
         public void Execute(
-            IRequestGameSessionNotFound requestGameSessionNotFound,
-            ICreateGameState createGameState,
+            IGameSessionNotFoundRequest gameSessionNotFoundRequest,
+            ICreateNewGame createNewGame,
             IAwaitingResponseGateway responseGateway,
             IPackVersionGateway packVersionGateway,
             IGenerateSeed generateSeed,
             IPublishEndpoint publishEndPoint)
         {
-            if (InvalidMessageID(requestGameSessionNotFound))
+            if (InvalidMessageID(gameSessionNotFoundRequest))
             {
                 throw new InvalidMessageIDException();
             }
 
-            if (InvalidSessionID(requestGameSessionNotFound))
+            if (InvalidSessionID(gameSessionNotFoundRequest))
             {
                 throw new InvalidSessionIDException();
             }
 
-            if (responseGateway.HasID(requestGameSessionNotFound.MessageID))
+            if (responseGateway.HasID(gameSessionNotFoundRequest.MessageID))
             {
-                responseGateway.PopID(requestGameSessionNotFound.MessageID);
-                createGameState.Execute(requestGameSessionNotFound.SessionID, packVersionGateway,responseGateway, generateSeed,
+                responseGateway.PopID(gameSessionNotFoundRequest.MessageID);
+                createNewGame.Execute(gameSessionNotFoundRequest.SessionID, packVersionGateway,responseGateway, generateSeed,
                     publishEndPoint);
             }
         }
 
-        private static bool InvalidMessageID(IRequestGameSessionNotFound requestGameSessionNotFound)
+        private static bool InvalidMessageID(IGameSessionNotFoundRequest gameSessionNotFoundRequest)
         {
-            return requestGameSessionNotFound.MessageID == null ||
-                   string.IsNullOrEmpty(requestGameSessionNotFound.MessageID) ||
-                   string.IsNullOrWhiteSpace(requestGameSessionNotFound.MessageID);
+            return gameSessionNotFoundRequest.MessageID == null ||
+                   string.IsNullOrEmpty(gameSessionNotFoundRequest.MessageID) ||
+                   string.IsNullOrWhiteSpace(gameSessionNotFoundRequest.MessageID);
         }
 
-        private static bool InvalidSessionID(IRequestGameSessionNotFound requestGameSessionNotFound)
+        private static bool InvalidSessionID(IGameSessionNotFoundRequest gameSessionNotFoundRequest)
         {
-            return requestGameSessionNotFound.SessionID == null ||
-                   string.IsNullOrEmpty(requestGameSessionNotFound.SessionID) ||
-                   string.IsNullOrWhiteSpace(requestGameSessionNotFound.SessionID);
+            return gameSessionNotFoundRequest.SessionID == null ||
+                   string.IsNullOrEmpty(gameSessionNotFoundRequest.SessionID) ||
+                   string.IsNullOrWhiteSpace(gameSessionNotFoundRequest.SessionID);
         }
     }
 }

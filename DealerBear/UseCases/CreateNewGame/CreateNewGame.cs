@@ -2,13 +2,13 @@ using System;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
-using DealerBear.UseCases.CreateGameState.Interface;
+using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
 using MassTransit;
 
-namespace DealerBear.UseCases.CreateGameState
+namespace DealerBear.UseCases.CreateNewGame
 {
-    public class CreateGameState : ICreateGameState
+    public class CreateNewGame : ICreateNewGame
     {
         public void Execute(
             string sessionID, 

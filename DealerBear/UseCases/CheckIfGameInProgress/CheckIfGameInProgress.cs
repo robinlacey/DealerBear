@@ -2,12 +2,12 @@ using System;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
-using DealerBear.UseCases.RequestGameData.Interface;
+using DealerBear.UseCases.CheckIfGameInProgress.Interface;
 using MassTransit;
 
-namespace DealerBear.UseCases.RequestGameData
+namespace DealerBear.UseCases.CheckIfGameInProgress
 {
-    public class RequestGameData : IRequestGameData
+    public class CheckIfGameInProgress : ICheckIfGameInProgress
     {
         public void Execute(IGameRequest gameRequest, IAwaitingResponseGateway responseGateway,
             IPublishEndpoint publishEndPoint)

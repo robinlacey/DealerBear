@@ -1,6 +1,6 @@
 namespace DealerBear.Messages
 {
-    public interface IRequestPackNumberUpdated
+    public interface IRequestPackVersionNumberUpdated
     {
         int PackNumber { get; set; }
     }

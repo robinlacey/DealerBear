@@ -2,9 +2,9 @@ using DealerBear.Gateway.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
 using MassTransit;
 
-namespace DealerBear.UseCases.CreateGameState.Interface
+namespace DealerBear.UseCases.CreateNewGame.Interface
 {
-    public interface ICreateGameState
+    public interface ICreateNewGame
     {
         void Execute(
             string sessionID,

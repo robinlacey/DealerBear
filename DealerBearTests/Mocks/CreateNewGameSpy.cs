@@ -1,11 +1,11 @@
 using DealerBear.Gateway.Interface;
-using DealerBear.UseCases.CreateGameState.Interface;
+using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
 using MassTransit;
 
 namespace DealerBearTests.Mocks
 {
-    public class CreateGameStateSpy : ICreateGameState
+    public class CreateNewGameSpy : ICreateNewGame
     {
         public bool ExecuteCalled { get; private set; }
 

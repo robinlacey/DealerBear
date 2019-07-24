@@ -2,9 +2,9 @@ using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using MassTransit;
 
-namespace DealerBear.UseCases.RequestGameData.Interface
+namespace DealerBear.UseCases.CheckIfGameInProgress.Interface
 {
-    public interface IRequestGameData
+    public interface ICheckIfGameInProgress
     {
         void Execute(IGameRequest gameRequest, IAwaitingResponseGateway responseGateway,
             IPublishEndpoint publishEndPoint);

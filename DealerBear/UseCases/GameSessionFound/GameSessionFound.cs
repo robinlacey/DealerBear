@@ -2,7 +2,7 @@ using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.GameSessionFound.Interface;
-using DealerBear.UseCases.GetCurrentGameState.Interface;
+using DealerBear.UseCases.GetGameInProgress.Interface;
 using MassTransit;
 
 namespace DealerBear.UseCases.GameSessionFound
@@ -11,8 +11,8 @@ namespace DealerBear.UseCases.GameSessionFound
     {
         public void Execute(
             IRequestGameSessionFound requestGameSessionFound,
-            IGetCurrentGameState getCurrentGameStateUseCase,
-            IAwaitingResponseGateway responseGateway,
+            IGetGameInProgress getGameInProgressUseCase,
+            IAwaitingResponseGateway awaitingResponseGateway,
             IPublishEndpoint publishEndPoint)
         {
             if (InvalidMessageID(requestGameSessionFound))
@@ -25,11 +25,13 @@ namespace DealerBear.UseCases.GameSessionFound
                 throw new InvalidSessionIDException();
             }
 
-            if (responseGateway.HasID(requestGameSessionFound.MessageID))
+            if (!awaitingResponseGateway.HasID(requestGameSessionFound.MessageID))
             {
-                responseGateway.PopID(requestGameSessionFound.MessageID);
-                getCurrentGameStateUseCase.Execute();
+                return;
             }
+            
+            awaitingResponseGateway.PopID(requestGameSessionFound.MessageID);
+            getGameInProgressUseCase.Execute(requestGameSessionFound.SessionID, awaitingResponseGateway, publishEndPoint);
         }
 
         private static bool InvalidMessageID(IRequestGameSessionFound requestGameSessionFound)

@@ -1,14 +1,14 @@
 using System;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
-using DealerBear.UseCases.RequestGameData;
-using DealerBear.UseCases.RequestGameData.Interface;
+using DealerBear.UseCases.CheckIfGameInProgress;
+using DealerBear.UseCases.CheckIfGameInProgress.Interface;
 using DealerBearTests.Mocks;
 using NUnit.Framework;
 
 namespace DealerBearTests.UseCases
 {
-    public class RequestGameTests
+    public class CheckIfGameInProgressTests
     {
         public class GivenInvalidInput
         {
@@ -19,9 +19,9 @@ namespace DealerBearTests.UseCases
                 [TestCase(null)]
                 public void ThenThrowsInvalidSessionID(string invalidID)
                 {
-                    IRequestGameData requestGameData = new RequestGameData();
+                    ICheckIfGameInProgress checkIfGameInProgress = new CheckIfGameInProgress();
                     Assert.Throws<InvalidSessionIDException>(() =>
-                        requestGameData.Execute(new GameRequestStub(invalidID), new AwaitingResponseGatewayDummy(),
+                        checkIfGameInProgress.Execute(new GameRequestStub(invalidID), new AwaitingResponseGatewayDummy(),
                             new PublishEndPointDummy()));
                 }
             }
@@ -33,9 +33,9 @@ namespace DealerBearTests.UseCases
             public void ThenSessionIDIsPublishedToIsSessionIDInUseQueue()
             {
                 PublishEndPointSpy spy = new PublishEndPointSpy();
-                IRequestGameData requestGameData = new RequestGameData();
+                ICheckIfGameInProgress checkIfGameInProgress = new CheckIfGameInProgress();
                 string id = Guid.NewGuid().ToString();
-                requestGameData.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
+                checkIfGameInProgress.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
                 IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse =
                     spy.MessageObject as IRequestGameIsSessionIDInUse;
                 Assert.IsNotNull(requestGameIsSessionIDInUse);
@@ -47,9 +47,9 @@ namespace DealerBearTests.UseCases
             {
                 AwaitingResponseGatewaySpy gatewaySpy = new AwaitingResponseGatewaySpy(false);
                 PublishEndPointSpy publishSpy = new PublishEndPointSpy();
-                IRequestGameData requestGameData = new RequestGameData();
+                ICheckIfGameInProgress checkIfGameInProgress = new CheckIfGameInProgress();
                 string id = Guid.NewGuid().ToString();
-                requestGameData.Execute(new GameRequestStub(id), gatewaySpy, publishSpy);
+                checkIfGameInProgress.Execute(new GameRequestStub(id), gatewaySpy, publishSpy);
 
                 IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse =
                     publishSpy.MessageObject as IRequestGameIsSessionIDInUse;
@@ -63,9 +63,9 @@ namespace DealerBearTests.UseCases
             public void ThenNewMessageIDIsGUID()
             {
                 PublishEndPointSpy spy = new PublishEndPointSpy();
-                IRequestGameData requestGameData = new RequestGameData();
+                ICheckIfGameInProgress checkIfGameInProgress = new CheckIfGameInProgress();
                 string id = Guid.NewGuid().ToString();
-                requestGameData.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
+                checkIfGameInProgress.Execute(new GameRequestStub(id), new AwaitingResponseGatewayDummy(), spy);
                 IRequestGameIsSessionIDInUse requestGameIsSessionIDInUse =
                     spy.MessageObject as IRequestGameIsSessionIDInUse;
                 Assert.IsNotNull(requestGameIsSessionIDInUse);
