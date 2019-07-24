@@ -1,10 +1,10 @@
 using System;
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.CreateNewGame
 {
@@ -15,7 +15,7 @@ namespace DealerBear.UseCases.CreateNewGame
             IPackVersionGateway packVersionGateway, 
             IAwaitingResponseGateway awaitingResponseGateway,
             IGenerateSeed generateSeedUseCase,
-            IPublishEndpoint publishEndPoint)
+            IPublishMessageAdaptor publishEndPoint)
         {
             if (InvalidSessionID(sessionID))
             {

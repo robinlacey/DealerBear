@@ -4,7 +4,6 @@ using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using DealerBearTests.Mocks;
-using MassTransit;
 using NUnit.Framework;
 
 namespace DealerBearTests.UseCases

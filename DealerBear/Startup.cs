@@ -1,5 +1,6 @@
 ﻿using System;
-using DealerBear.Consumers;
+using DealerBear.Adaptor;
+using DealerBear.Adaptor.Interface;
 using DealerBear.Consumers.Player.Requests;
 using DealerBear.Consumers.Services.AdHoc;
 using DealerBear.Consumers.Services.Response;
@@ -54,9 +55,9 @@ namespace DealerBear
                     h.Username(Environment.GetEnvironmentVariable("RABBITMQ_USERNAME"));
                     h.Password(Environment.GetEnvironmentVariable("RABBITMQ_PASSWORD"));
                 });
-
                 SetEndPoints(cfg, host, provider);
             }));
+       
 
             AddGateways(services);
 
@@ -65,10 +66,17 @@ namespace DealerBear
             services.AddSingleton<IBus>(provider => provider.GetRequiredService<IBusControl>());
 
             AddRequestClients(services);
-
+            AddAdaptors(services);
+            
             services.AddSingleton<IHostedService, BusService>();
         }
 
+        
+        private static void AddAdaptors(IServiceCollection services)
+        {
+            services.AddScoped<IPublishMessageAdaptor, PublishMessageMassTransitAdaptor>();
+        }
+        
         private static void AddGateways(IServiceCollection services)
         {
             services.AddSingleton<IAwaitingResponseGateway, InMemoryAwaitingResponseGateway>();
@@ -117,6 +125,7 @@ namespace DealerBear
                 e.Consumer<RequestGameConsumer>(provider);
                 EndpointConvention.Map<IGameRequest>(e.InputAddress);
             });
+            
         }
 
         private static void SetEndpointForGameResponse(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,

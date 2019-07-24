@@ -1,15 +1,15 @@
 using System;
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
 using DealerBear.UseCases.GetGameInProgress.Interface;
-using MassTransit;
 
 namespace DealerBear.UseCases.GetGameInProgress
 {
     public class GetGameInProgress : IGetGameInProgress
     {
-        public void Execute(string sessionID, IAwaitingResponseGateway awaitingResponseGateway, IPublishEndpoint publishEndPoint)
+        public void Execute(string sessionID, IAwaitingResponseGateway awaitingResponseGateway, IPublishMessageAdaptor publishEndPoint)
         {
             if (InvalidSessionID(sessionID))
             {

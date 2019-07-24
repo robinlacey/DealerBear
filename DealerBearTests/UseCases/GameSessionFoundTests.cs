@@ -1,10 +1,10 @@
+using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
 using DealerBear.UseCases.GameSessionFound;
 using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GetGameInProgress.Interface;
 using DealerBearTests.Mocks;
-using MassTransit;
 using NUnit.Framework;
 
 namespace DealerBearTests.UseCases
@@ -32,7 +32,7 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", messageID);
 
                     IGetGameInProgress getGameInProgressDummy = new GetGameInProgressDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, _awaitingResponseGatewaySpy,
                         publishEndPointDummy);
@@ -49,7 +49,7 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", messageID);
 
                     IGetGameInProgress getGameInProgressDummy = new GetGameInProgressDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, _awaitingResponseGatewaySpy,
                         publishEndPointDummy);
@@ -66,7 +66,7 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", messageID);
 
                     GetGameInProgressSpy getGameInProgressDummy = new GetGameInProgressSpy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, _awaitingResponseGatewaySpy,
                         publishEndPointDummy);
@@ -93,7 +93,7 @@ namespace DealerBearTests.UseCases
                     IGameSessionFound gameSessionFoundUseCase = new GameSessionFound();
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", messageID);
                     IGetGameInProgress getGameInProgressDummy = new GetGameInProgressDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, _awaitingResponseGatewaySpy,
                         publishEndPointDummy);
@@ -107,7 +107,7 @@ namespace DealerBearTests.UseCases
                     IGameSessionFound gameSessionFoundUseCase = new GameSessionFound();
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", "Message ID");
                     GetGameInProgressSpy getGameInProgressSpy = new GetGameInProgressSpy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     gameSessionFoundUseCase.Execute(message, getGameInProgressSpy, _awaitingResponseGatewaySpy,
                         publishEndPointDummy);
@@ -130,7 +130,7 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub(invalidInput, "Message ID");
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
                     IGetGameInProgress getGameInProgressDummy = new GetGameInProgressDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     Assert.Throws<InvalidSessionIDException>(() =>
                         gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, spy, publishEndPointDummy));
@@ -148,7 +148,7 @@ namespace DealerBearTests.UseCases
                     IRequestGameSessionFound message = new RequestGameSessionFoundStub("Session ID", invalidInput);
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
                     IGetGameInProgress getGameInProgressDummy = new GetGameInProgressDummy();
-                    IPublishEndpoint publishEndPointDummy = new PublishEndPointDummy();
+                    IPublishMessageAdaptor publishEndPointDummy = new PublishEndPointDummy();
 
                     Assert.Throws<InvalidMessageIDException>(() =>
                         gameSessionFoundUseCase.Execute(message, getGameInProgressDummy, spy, publishEndPointDummy));
