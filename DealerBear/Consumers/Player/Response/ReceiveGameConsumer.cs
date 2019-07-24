@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using MassTransit;
 
 namespace DealerBear.Consumers.Player.Response

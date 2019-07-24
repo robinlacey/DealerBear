@@ -1,6 +1,7 @@
 using System;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.CheckIfGameInProgress;
 using DealerBear.UseCases.CheckIfGameInProgress.Interface;
 using DealerBearTests.Mocks;

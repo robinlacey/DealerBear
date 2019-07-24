@@ -1,6 +1,7 @@
 using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GameSessionFound;
 using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GetGameInProgress.Interface;

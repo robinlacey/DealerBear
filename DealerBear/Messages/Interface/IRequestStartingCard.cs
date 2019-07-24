@@ -1,6 +1,6 @@
-namespace DealerBear.Messages
+namespace DealerBear.Messages.Interface
 {
-    public interface ICreateNewGameData
+    public interface IRequestStartingCard
     {
         string SessionID { get; }
         string MessageID { get; }

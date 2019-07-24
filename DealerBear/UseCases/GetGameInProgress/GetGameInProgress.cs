@@ -3,6 +3,7 @@ using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
+using DealerBear.Messages.Implementation;
 using DealerBear.UseCases.GetGameInProgress.Interface;
 
 namespace DealerBear.UseCases.GetGameInProgress

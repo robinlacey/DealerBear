@@ -1,6 +1,7 @@
 using DealerBear.Adaptor.Interface;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GetGameInProgress.Interface;
 
 

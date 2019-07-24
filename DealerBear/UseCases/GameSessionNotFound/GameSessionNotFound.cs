@@ -2,9 +2,10 @@ using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
 using DealerBear.Messages;
-using DealerBear.UseCases.CreateNewGame.Interface;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using DealerBear.UseCases.GenerateSeed.Interface;
+using IGetStartingCard = DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard;
 
 namespace DealerBear.UseCases.GameSessionNotFound
 {
@@ -12,7 +13,7 @@ namespace DealerBear.UseCases.GameSessionNotFound
     {
         public void Execute(
             IGameSessionNotFoundRequest gameSessionNotFoundRequest,
-            ICreateNewGame createNewGame,
+            IGetStartingCard getStartingCard,
             IAwaitingResponseGateway responseGateway,
             IPackVersionGateway packVersionGateway,
             IGenerateSeed generateSeed,
@@ -31,7 +32,10 @@ namespace DealerBear.UseCases.GameSessionNotFound
             if (responseGateway.HasID(gameSessionNotFoundRequest.MessageID))
             {
                 responseGateway.PopID(gameSessionNotFoundRequest.MessageID);
-                createNewGame.Execute(gameSessionNotFoundRequest.SessionID, packVersionGateway,responseGateway, generateSeed,
+                getStartingCard.Execute(
+                    gameSessionNotFoundRequest.SessionID, 
+                    packVersionGateway,responseGateway, 
+                    generateSeed,
                     publishEndPoint);
             }
         }

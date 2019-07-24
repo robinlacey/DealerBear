@@ -1,6 +1,6 @@
 using System;
 using DealerBear.Exceptions;
-using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.CreateNewGame;
 using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBearTests.Mocks;
@@ -12,100 +12,126 @@ namespace DealerBearTests.UseCases
     {
         public class GivenInvalidInput
         {
-            public class WhenSessionIDIsInvalid
+            public class GivenNoMatchingMessageID
             {
-                [TestCase("  ")]
-                [TestCase("")]
-                [TestCase(null)]
-                public void ThenThrowsInvalidSessionID(string sessionID)
+                [Test]
+                public void ThenNoMessagesArePublished()
                 {
+                    AwaitingResponseGatewaySpy stub = new AwaitingResponseGatewaySpy(false);
+                    PublishEndPointSpy spy = new PublishEndPointSpy();
                     ICreateNewGame createNewGame = new CreateNewGame();
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    Assert.Throws<InvalidSessionIDException>(() => createNewGame.Execute(sessionID,
-                        new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(), publishEndPointSpy));
+                    createNewGame.Execute("SessionID", "MessageID", "StartingCardID",10,1, stub,spy);
+                    Assert.False(spy.PublishRun);
+                }
+            }
+
+            public class GivenInvalidSessionID
+            {
+                [TestCase("")]
+                [TestCase("   ")]
+                [TestCase(null)]
+                public void ThenThrowsInvalidSessionIDException(string invalidSessionID)
+                {
+                    AwaitingResponseGatewaySpy stub = new AwaitingResponseGatewaySpy(false);
+                    PublishEndPointSpy spy = new PublishEndPointSpy();
+                    ICreateNewGame createNewGame = new CreateNewGame();
+                    Assert.Throws<InvalidSessionIDException>(()=>createNewGame.Execute(invalidSessionID, "MessageID", "StartingCardID",10,1, stub,spy));
+                }
+            }
+            public class GivenInvalidMessageID
+            {
+                [TestCase("")]
+                [TestCase("   ")]
+                [TestCase(null)]
+                public void ThenThrowsInvalidMessageIDException(string invalidMessageID)
+                {
+                    AwaitingResponseGatewaySpy stub = new AwaitingResponseGatewaySpy(false);
+                    PublishEndPointSpy spy = new PublishEndPointSpy();
+                    ICreateNewGame createNewGame = new CreateNewGame();
+                    Assert.Throws<InvalidMessageIDException>(()=>createNewGame.Execute("SessionID", invalidMessageID, "StartingCardID",10,1, stub,spy));
                 }
             }
         }
 
         public class GivenValidInput
         {
-            public class WhenSessionIDIsPassedIn
+            [TestCase("Scout The Messenger Dog")]
+            [TestCase("Is Digging Holes In The Garden")]
+            public void ThenNewMessageIDIsCheckedAddedAndPublished(string messageID)
             {
-                [TestCase("Scout The Dog")]
-                [TestCase("Is A Good Dog")]
-                public void ThenValueIsSavedToCreateGameGateway(string sessionID)
-                {
-                    ICreateNewGame createNewGame = new CreateNewGame();
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createNewGame.Execute(sessionID, new PackVersionGatewayDummy(), new AwaitingResponseGatewayDummy(), new GenerateSeedDummy(),
-                        publishEndPointSpy);
-                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
-                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
-                    Assert.True(newGameData.SessionID == sessionID);
-                }
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy = new AwaitingResponseGatewaySpy(true);
+                PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                ICreateNewGame createNewGame = new CreateNewGame();
+                createNewGame.Execute("SessionID", messageID, "StartingCardID",10,1, awaitingResponseGatewaySpy,publishEndPointSpy);
+                AssertMessageIDIsCheckedAndRemoved(messageID, awaitingResponseGatewaySpy);
+                Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameRequest);
+                AssertNewMessageIDIsGeneratedAndAddedToGateway(messageID, publishEndPointSpy, awaitingResponseGatewaySpy);
             }
 
-            public class WhenPackVersionGatewayIsCalled
+            private static void AssertNewMessageIDIsGeneratedAndAddedToGateway(string messageID,
+                PublishEndPointSpy publishEndPointSpy, AwaitingResponseGatewaySpy awaitingResponseGatewaySpy)
             {
-                [TestCase(1)]
-                [TestCase(199)]
-                [TestCase(-10)]
-                public void ThenValueIsSavedToCreateGameGateway(int version)
-                {
-                    ICreateNewGame createNewGame = new CreateNewGame();
-                    PackVersionGatewayStub stub = new PackVersionGatewayStub(version);
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createNewGame.Execute("SessionID", stub,new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(),  publishEndPointSpy);
-                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
-                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
-                    Assert.True(newGameData.PackVersionNumber == version);
-                }
+                ICreateNewGameRequest message = (ICreateNewGameRequest) publishEndPointSpy.MessageObject;
+                Assert.True(awaitingResponseGatewaySpy.SaveIDInput == message.MessageID);
+                Assert.True(message.MessageID != messageID);
+                Assert.True(Guid.TryParse(message.MessageID, out Guid _));
             }
 
-            public class WhenGenerateSeedUseCaseIsCalled
+            private static void AssertMessageIDIsCheckedAndRemoved(string messageID,
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy)
             {
-                [TestCase(12351241)]
-                [TestCase(532452345)]
-                [TestCase(-234)]
-                public void ThenValueIsSavedToCreateGameGateway(int seedGeneratorReturnValue)
-                {
-                    ICreateNewGame createNewGame = new CreateNewGame();
-                    GenerateSeedStub stub = new GenerateSeedStub(seedGeneratorReturnValue);
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createNewGame.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  stub, publishEndPointSpy);
-                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
-                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
-                    Assert.True(Math.Abs(newGameData.Seed - seedGeneratorReturnValue) < 0.1f);
-                }
+                Assert.True(awaitingResponseGatewaySpy.HasIDInput == messageID);
+                Assert.True(awaitingResponseGatewaySpy.PopIDInput == messageID);
             }
-            
-            //Idempotent
-            public class WhenMessageIDIsGenerated
+            [TestCase("Scout The Card Dog")]
+            [TestCase("Is Digging Holes In The Garden")]
+            public void ThenCardIDIsPublished(string cardID)
             {
-                [Test]
-                public void ThenNewMessageIDIsGUID()
-                {
-                    ICreateNewGame createNewGame = new CreateNewGame();
-                    GenerateSeedStub stub = new GenerateSeedStub(0);
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createNewGame.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(), stub, publishEndPointSpy);
-                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
-                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
-                    Assert.True(Guid.TryParse(newGameData.MessageID, out Guid _));
-                }
-
-                [Test]
-                public void ThenNewMessageIdIsAddedToAwaitingResponseGateway()
-                {
-                    ICreateNewGame createNewGame = new CreateNewGame();
-                    GenerateSeedStub stub = new GenerateSeedStub(0);
-                    PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(true);
-                    createNewGame.Execute("SessionID", new PackVersionGatewayDummy(),spy, stub, publishEndPointSpy);
-                    Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameData);
-                    ICreateNewGameData newGameData = (ICreateNewGameData) publishEndPointSpy.MessageObject;
-                    Assert.True(spy.SaveIDInput == newGameData.MessageID);
-                }
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy = new AwaitingResponseGatewaySpy(true);
+                PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                ICreateNewGame createNewGame = new CreateNewGame();
+                createNewGame.Execute("SessionID", "MessageID", cardID,10,1, awaitingResponseGatewaySpy,publishEndPointSpy);
+                Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameRequest);
+                ICreateNewGameRequest message = (ICreateNewGameRequest) publishEndPointSpy.MessageObject;
+                Assert.True(message.StartingCardID == cardID);
+            }
+            [TestCase(10)]
+            [TestCase(231)]
+            [TestCase(-100)]
+            public void ThenSeedIsPublished(int seed)
+            {
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy = new AwaitingResponseGatewaySpy(true);
+                PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                ICreateNewGame createNewGame = new CreateNewGame();
+                createNewGame.Execute("SessionID", "MessageID", "CardID",seed,1, awaitingResponseGatewaySpy,publishEndPointSpy);
+                Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameRequest);
+                ICreateNewGameRequest message = (ICreateNewGameRequest) publishEndPointSpy.MessageObject;
+                Assert.True(message.Seed == seed);
+            }
+            [TestCase(120)]
+            [TestCase(2431)]
+            [TestCase(-1020)]
+            public void ThenPackVersionIsPublished(int packNumber)
+            {
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy = new AwaitingResponseGatewaySpy(true);
+                PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                ICreateNewGame createNewGame = new CreateNewGame();
+                createNewGame.Execute("SessionID", "MessageID", "CardID",1,packNumber, awaitingResponseGatewaySpy,publishEndPointSpy);
+                Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameRequest);
+                ICreateNewGameRequest message = (ICreateNewGameRequest) publishEndPointSpy.MessageObject;
+                Assert.True(message.PackVersionNumber == packNumber);
+            }
+            [TestCase("Scout")]
+            [TestCase("Is A Hot Dog")]
+            public void ThenSessionIDIsPublished(string sessionID)
+            {
+                AwaitingResponseGatewaySpy awaitingResponseGatewaySpy = new AwaitingResponseGatewaySpy(true);
+                PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
+                ICreateNewGame createNewGame = new CreateNewGame();
+                createNewGame.Execute(sessionID, "MessageID", "CardID",10,1, awaitingResponseGatewaySpy,publishEndPointSpy);
+                Assert.True(publishEndPointSpy.MessageObject is ICreateNewGameRequest);
+                ICreateNewGameRequest message = (ICreateNewGameRequest) publishEndPointSpy.MessageObject;
+                Assert.True(message.SessionID == sessionID);
             }
         }
     }

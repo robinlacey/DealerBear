@@ -1,4 +1,4 @@
-namespace DealerBear.Messages
+namespace DealerBear.Messages.Interface
 {
     public interface IRequestPackVersionNumberUpdated
     {

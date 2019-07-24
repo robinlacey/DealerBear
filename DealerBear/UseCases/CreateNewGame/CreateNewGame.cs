@@ -2,41 +2,57 @@ using System;
 using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
-using DealerBear.Messages;
+using DealerBear.Messages.Implementation;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.CreateNewGame.Interface;
-using DealerBear.UseCases.GenerateSeed.Interface;
 
 namespace DealerBear.UseCases.CreateNewGame
 {
-    public class CreateNewGame : ICreateNewGame
+    public class CreateNewGame:ICreateNewGame
     {
-        public void Execute(
-            string sessionID, 
-            IPackVersionGateway packVersionGateway, 
-            IAwaitingResponseGateway awaitingResponseGateway,
-            IGenerateSeed generateSeedUseCase,
-            IPublishMessageAdaptor publishEndPoint)
+        public void Execute(string sessionID, string messageID, string startingCardID, int seed, int packVersion,
+            IAwaitingResponseGateway awaitingResponseGateway, IPublishMessageAdaptor publishMessageAdaptor)
         {
+            if (InvalidMessageID(messageID))
+            {
+                throw new InvalidMessageIDException();
+            }
+
             if (InvalidSessionID(sessionID))
             {
                 throw new InvalidSessionIDException();
             }
 
-            string messageID = Guid.NewGuid().ToString();
-            publishEndPoint.Publish(new CreateNewGameData
+            if (awaitingResponseGateway.HasID(messageID))
             {
-                MessageID = messageID,
-                SessionID = sessionID,
-                PackVersionNumber = packVersionGateway.GetCurrentPackVersion(),
-                Seed = generateSeedUseCase.Execute(),
-            });
-            awaitingResponseGateway.SaveID(messageID);
+                awaitingResponseGateway.PopID(messageID);
+                string newMessageID = Guid.NewGuid().ToString();
+                publishMessageAdaptor.Publish(new CreateNewGameRequest
+                {
+                    SessionID = sessionID,
+                    MessageID = newMessageID,
+                    StartingCardID = startingCardID,
+                    Seed = seed,
+                    PackVersionNumber = packVersion
+                });
+                awaitingResponseGateway.SaveID(newMessageID);
+                
+            }
         }
-
+        private static bool InvalidMessageID(string messageID)
+        {
+            return messageID == null ||
+                   string.IsNullOrEmpty(messageID) ||
+                   string.IsNullOrWhiteSpace(messageID);
+        }
 
         private static bool InvalidSessionID(string sessionID)
         {
-            return sessionID == null || string.IsNullOrEmpty(sessionID) || string.IsNullOrWhiteSpace(sessionID);
+            return sessionID == null ||
+                   string.IsNullOrEmpty(sessionID) ||
+                   string.IsNullOrWhiteSpace(sessionID);
         }
     }
+    
+    
 }
