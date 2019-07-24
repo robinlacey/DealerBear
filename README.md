@@ -1,5 +1,7 @@
 # 🎰:bear:
 
+
+
 Like any card dealer, **Dealer Bear** (🎰:bear:) takes requests from players, draws new cards and reports the status of the current game. Dealer Bear communicates with [Pack Bear]() (:black_joker::bear:) to draw cards from the card pack and [Game Bear]()  (:floppy_disk::bear:)  save current game status.
 
 The game rules are similar to [Reigns](https://reignsgame.com/). Players are dealt a card. They can choose from a number of options. Choosing an option with modify player stats and can add/remove cards from the players deck. The game is over when any of the player stats goes over or under a threshold. 
