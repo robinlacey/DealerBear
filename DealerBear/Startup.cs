@@ -94,7 +94,6 @@ namespace DealerBear
             SetEndpointForRequestGameSessionNotFound(cfg, host, provider);
             SetEndpointForRequestGameSessionFound(cfg, host, provider);
             SetEndpointForPackNumberUpdating(cfg, host, provider);
-            SetEndpointForStartingCardReponse(cfg, host, provider);
        
         }
 
@@ -113,9 +112,6 @@ namespace DealerBear
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestGameSessionFound>());
             services.AddScoped(provider =>
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestPackVersionNumberUpdated>());
-            services.AddScoped(provider =>
-                provider.GetRequiredService<IBus>().CreateRequestClient<IStartingCardResponse>());
-       
         }
 
         private static void SetEndpointForGameRequest(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
@@ -131,18 +127,6 @@ namespace DealerBear
             
         }
 
-        private static void SetEndpointForStartingCardReponse(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
-            IServiceProvider provider)
-        {
-            cfg.ReceiveEndpoint(host, "StartingCardResponse", e =>
-            {
-                e.PrefetchCount = 16;
-                e.UseMessageRetry(x => x.Interval(2, 100));
-                e.Consumer<RecieveStartingCardConsumer>(provider);
-                EndpointConvention.Map<IStartingCardResponse>(e.InputAddress);
-            });
-        }
-        
         private static void SetEndpointForGameResponse(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
             IServiceProvider provider)
         {

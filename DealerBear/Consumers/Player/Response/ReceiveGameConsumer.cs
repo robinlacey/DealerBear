@@ -10,7 +10,8 @@ namespace DealerBear.Consumers.Player.Response
         public async Task Consume(ConsumeContext<IGameResponse> context)
         {
             // TODO 
-            // Publish message with data to Player via UseCase
+            // Get Card Data from Pack
+            // Then send back to player 
         }
     }
 }
