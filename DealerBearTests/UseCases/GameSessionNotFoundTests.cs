@@ -1,10 +1,10 @@
 using DealerBear.Exceptions;
-using DealerBear.Messages;
-using DealerBear.UseCases.CreateNewGame.Interface;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
 using DealerBearTests.Mocks;
 using NUnit.Framework;
+using IGetStartingCard = DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard;
 
 namespace DealerBearTests.UseCases
 {
@@ -27,13 +27,7 @@ namespace DealerBearTests.UseCases
                 [TestCase("Bad Dog")]
                 public void ThenHasIDIsCalledOnAwaitingResponseGateway(string messageID)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest message = new GameSessionNotFoundRequestStub("Session ID", messageID);
-
-                    gameSessionFoundUseCase.Execute(message,
-                        new CreateNewGameDummy(), _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(),
-                        new GenerateSeedDummy(), new PublishEndPointDummy());
-
+                    new GameSessionNotFound(new GetStartingCardDummy(),_awaitingResponseGatewaySpy).Execute("Session ID", messageID);
                     Assert.True(_awaitingResponseGatewaySpy.HasIDInput == messageID);
                 }
 
@@ -42,13 +36,8 @@ namespace DealerBearTests.UseCases
                 [TestCase("Bad Dog")]
                 public void ThenPopIDIsCalledOnAwaitingResponseGateway(string messageID)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest message = new GameSessionNotFoundRequestStub("Session ID", messageID);
-
-
-                    gameSessionFoundUseCase.Execute(message, new CreateNewGameDummy(),
-                        _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(), new GenerateSeedDummy(),
-                        new PublishEndPointDummy());
+                    new GameSessionNotFound(new GetStartingCardDummy(),
+                        _awaitingResponseGatewaySpy).Execute("Session ID", messageID);
 
                     Assert.True(_awaitingResponseGatewaySpy.PopIDInput == messageID);
                 }
@@ -58,16 +47,9 @@ namespace DealerBearTests.UseCases
                 [TestCase("Bad Dog")]
                 public void ThenGetGameStateGameUseCaseIsExecuted(string messageID)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest message = new GameSessionNotFoundRequestStub("Session ID", messageID);
-
-                    CreateNewGameSpy createNewGameSpy = new CreateNewGameSpy();
-
-                    gameSessionFoundUseCase.Execute(message,
-                        createNewGameSpy, _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(),
-                        new GenerateSeedDummy(), new PublishEndPointDummy());
-
-                    Assert.True(createNewGameSpy.ExecuteCalled);
+                    GetStartingCardSpy getStartingCardSpy = new GetStartingCardSpy();
+                    new GameSessionNotFound(getStartingCardSpy, _awaitingResponseGatewaySpy).Execute("Session ID", messageID);
+                    Assert.True(getStartingCardSpy.ExecuteCalled);
                 }
             }
 
@@ -87,13 +69,10 @@ namespace DealerBearTests.UseCases
                 [TestCase("Bad Dog")]
                 public void ThenHasIDIsCalledOnAwaitingResponseGateway(string messageID)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest message = new GameSessionNotFoundRequestStub("Session ID", messageID);
-                    ICreateNewGame createNewGameDummy = new CreateNewGameDummy();
+                    IGetStartingCard getStartingCardDummy = new GetStartingCardDummy();
 
-                    gameSessionFoundUseCase.Execute(message, createNewGameDummy,
-                        _awaitingResponseGatewaySpy, new PackVersionGatewayDummy(), new GenerateSeedDummy(),
-                        new PublishEndPointDummy());
+                    new GameSessionNotFound(getStartingCardDummy,
+                        _awaitingResponseGatewaySpy).Execute("Session ID", messageID);
 
                     Assert.True(_awaitingResponseGatewaySpy.HasIDInput == messageID);
                 }
@@ -101,14 +80,10 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenGetGameStateGameUseCaseIsNotExecuted()
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest
-                        message = new GameSessionNotFoundRequestStub("Session ID", "Message ID");
-                    CreateNewGameSpy getCurrentNewGameSpy = new CreateNewGameSpy();
+                    GetStartingCardSpy getCurrentNewGameSpy = new GetStartingCardSpy();
 
-                    gameSessionFoundUseCase.Execute(message, getCurrentNewGameSpy,
-                        new AwaitingResponseGatewayDummy(), new PackVersionGatewayDummy(), new GenerateSeedDummy(),
-                        new PublishEndPointDummy());
+                    new GameSessionNotFound(getCurrentNewGameSpy,
+                        new AwaitingResponseGatewayDummy()).Execute("Session ID", "Message ID");
 
                     Assert.False(getCurrentNewGameSpy.ExecuteCalled);
                 }
@@ -116,14 +91,10 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenNewMessageIDIsCreatedAndAddedToAwaitingResponseGateway()
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest
-                        message = new GameSessionNotFoundRequestStub("Session ID", "Message ID");
-                    CreateNewGameSpy getCurrentNewGameSpy = new CreateNewGameSpy();
+                    GetStartingCardSpy getCurrentNewGameSpy = new GetStartingCardSpy();
 
-                    gameSessionFoundUseCase.Execute(message, getCurrentNewGameSpy,
-                        new AwaitingResponseGatewayDummy(), new PackVersionGatewayDummy(), new GenerateSeedDummy(),
-                        new PublishEndPointDummy());
+                    new GameSessionNotFound(getCurrentNewGameSpy,
+                        new AwaitingResponseGatewayDummy()).Execute("Session ID", "Message ID");
 
                     Assert.False(getCurrentNewGameSpy.ExecuteCalled);
                 }
@@ -140,14 +111,9 @@ namespace DealerBearTests.UseCases
                 [TestCase(null)]
                 public void ThenThrowsInvalidSessionIDException(string invalidInput)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest
-                        message = new GameSessionNotFoundRequestStub(invalidInput, "Message ID");
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
-
-                    Assert.Throws<InvalidSessionIDException>(() => gameSessionFoundUseCase.Execute(
-                        message, new CreateNewGameDummy(), spy, new PackVersionGatewayDummy(),
-                        new GenerateSeedDummy(), new PublishEndPointDummy()));
+                    Assert.Throws<InvalidSessionIDException>(() =>  new GameSessionNotFound(new GetStartingCardDummy(), spy).Execute(
+                        invalidInput, "Message ID"));
                 }
             }
 
@@ -158,15 +124,11 @@ namespace DealerBearTests.UseCases
                 [TestCase(null)]
                 public void ThenThrowsInvalidMessageIDException(string invalidInput)
                 {
-                    IGameSessionNotFound gameSessionFoundUseCase = new GameSessionNotFound();
-                    IGameSessionNotFoundRequest
-                        message = new GameSessionNotFoundRequestStub("Session ID", invalidInput);
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(false);
-                    ICreateNewGame createNewGameDummy = new CreateNewGameDummy();
+                    IGetStartingCard getStartingCardDummy = new GetStartingCardDummy();
 
-                    Assert.Throws<InvalidMessageIDException>(() => gameSessionFoundUseCase.Execute(
-                        message, createNewGameDummy, spy,
-                        new PackVersionGatewayDummy(), new GenerateSeedDummy(), new PublishEndPointDummy()));
+                    Assert.Throws<InvalidMessageIDException>(() =>  new GameSessionNotFound(getStartingCardDummy, spy).Execute(
+                        "Session ID", invalidInput));
                 }
             }
         }

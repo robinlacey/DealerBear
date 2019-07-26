@@ -1,4 +1,6 @@
-namespace DealerBear.Messages
+using DealerBear.Messages.Interface;
+
+namespace DealerBear.Messages.Implementation
 {
     public class GetCurrentGameData:IGetGameData
     {

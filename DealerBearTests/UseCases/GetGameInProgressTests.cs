@@ -1,6 +1,6 @@
 using System;
 using DealerBear.Exceptions;
-using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GetGameInProgress;
 using DealerBear.UseCases.GetGameInProgress.Interface;
 using DealerBearTests.Mocks;
@@ -19,10 +19,10 @@ namespace DealerBearTests.UseCases
                 [TestCase("")]
                 [TestCase(null)]
                 public void ThenThrowsInvalidSessionID(string sessionID)
-                {
-                    IGetGameInProgress getGameInProgress = new GetGameInProgress();
+                {             
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    Assert.Throws<InvalidSessionIDException>(() => getGameInProgress.Execute(sessionID,new AwaitingResponseGatewayDummy(),publishEndPointSpy));
+                    IGetGameInProgress getGameInProgress = new GetGameInProgress(new AwaitingResponseGatewayDummy(),publishEndPointSpy);
+                    Assert.Throws<InvalidSessionIDException>(() => getGameInProgress.Execute(sessionID));
                 }
             }
         }
@@ -35,9 +35,10 @@ namespace DealerBearTests.UseCases
                 [TestCase("Is A Good Dog")]
                 public void ThenValueIsSavedToCreateGameGateway(string sessionID)
                 {
-                    IGetGameInProgress createNewGame = new GetGameInProgress();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    createNewGame.Execute(sessionID, new AwaitingResponseGatewayDummy(), publishEndPointSpy);
+                    IGetGameInProgress createNewGame = new GetGameInProgress(new AwaitingResponseGatewayDummy(), publishEndPointSpy);
+                  
+                    createNewGame.Execute(sessionID);
                     Assert.True(publishEndPointSpy.MessageObject is IGetGameData);
                     IGetGameData newGameData = (IGetGameData) publishEndPointSpy.MessageObject;
                     Assert.True(newGameData.SessionID == sessionID);
@@ -48,9 +49,10 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenNewMessageIDIsGUID()
                 {
-                    IGetGameInProgress getGameInProgress = new GetGameInProgress();
+              
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    getGameInProgress.Execute("SessionID", new AwaitingResponseGatewayDummy(), publishEndPointSpy);
+                    IGetGameInProgress getGameInProgress = new GetGameInProgress( new AwaitingResponseGatewayDummy(), publishEndPointSpy);
+                    getGameInProgress.Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IGetGameData);
                     IGetGameData gameData = (IGetGameData) publishEndPointSpy.MessageObject;
                     Assert.True(Guid.TryParse(gameData.MessageID, out Guid _));
@@ -59,10 +61,11 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenNewMessageIdIsAddedToAwaitingResponseGateway()
                 {
-                    IGetGameInProgress getGameInProgress = new GetGameInProgress();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(true);
-                    getGameInProgress.Execute("SessionID",spy, publishEndPointSpy);
+                    
+                    IGetGameInProgress getGameInProgress = new GetGameInProgress(spy, publishEndPointSpy); 
+                    getGameInProgress.Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IGetGameData);
                     IGetGameData newGameData = (IGetGameData) publishEndPointSpy.MessageObject;
                     Assert.True(spy.SaveIDInput == newGameData.MessageID);

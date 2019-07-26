@@ -1,9 +1,8 @@
-namespace DealerBear.Messages
+namespace DealerBear.Messages.Interface
 {
-    public interface IGameResponse
+    public interface IGetGameData
     {
         string SessionID { get; set; }
         string MessageID { get; set; }
-        // Current Card
     }
 }

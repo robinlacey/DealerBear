@@ -1,6 +1,6 @@
-namespace DealerBear.Messages
+namespace DealerBear.Messages.Interface
 {
-    public interface IRequestGameIsSessionIDInUse
+    public interface IGameSessionNotFoundRequest
     {
         string SessionID { get; set; }
         string MessageID { get; set; }

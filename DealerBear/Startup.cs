@@ -6,11 +6,9 @@ using DealerBear.Consumers.Services.AdHoc;
 using DealerBear.Consumers.Services.Response;
 using DealerBear.Gateway;
 using DealerBear.Gateway.Interface;
-using DealerBear.Messages;
+using DealerBear.Messages.Interface;
 using DealerBear.UseCases.CheckIfGameInProgress;
 using DealerBear.UseCases.CheckIfGameInProgress.Interface;
-using DealerBear.UseCases.CreateNewGame;
-using DealerBear.UseCases.CreateNewGame.Interface;
 using DealerBear.UseCases.GameSessionFound;
 using DealerBear.UseCases.GameSessionFound.Interface;
 using DealerBear.UseCases.GameSessionNotFound;
@@ -19,6 +17,8 @@ using DealerBear.UseCases.GenerateSeed;
 using DealerBear.UseCases.GenerateSeed.Interface;
 using DealerBear.UseCases.GetGameInProgress;
 using DealerBear.UseCases.GetGameInProgress.Interface;
+using DealerBear.UseCases.GetStartingCard;
+using DealerBear.UseCases.GetStartingCard.Interface;
 using GreenPipes;
 using MassTransit;
 using MassTransit.RabbitMqTransport;
@@ -112,7 +112,6 @@ namespace DealerBear
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestGameSessionFound>());
             services.AddScoped(provider =>
                 provider.GetRequiredService<IBus>().CreateRequestClient<IRequestPackVersionNumberUpdated>());
-       
         }
 
         private static void SetEndpointForGameRequest(IRabbitMqBusFactoryConfigurator cfg, IRabbitMqHost host,
@@ -198,7 +197,7 @@ namespace DealerBear
             services.AddScoped<IGameSessionFound, GameSessionFound>();
             services.AddScoped<IGameSessionNotFound, GameSessionNotFound>();
             services.AddScoped<IGetGameInProgress, GetGameInProgress>();
-            services.AddScoped<ICreateNewGame, CreateNewGame>();
+            services.AddScoped<IGetStartingCard, GetStartingCard>();
             services.AddScoped<IGenerateSeed, GenerateSeed>();
         }
 
