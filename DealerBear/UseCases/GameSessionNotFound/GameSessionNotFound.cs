@@ -1,57 +1,41 @@
-using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
-using DealerBear.Messages;
-using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GameSessionNotFound.Interface;
-using DealerBear.UseCases.GenerateSeed.Interface;
 using IGetStartingCard = DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard;
 
 namespace DealerBear.UseCases.GameSessionNotFound
 {
     public class GameSessionNotFound : IGameSessionNotFound
     {
-        public void Execute(
-            IGameSessionNotFoundRequest gameSessionNotFoundRequest,
+        private readonly IGetStartingCard _getStartingCard;
+        private readonly IAwaitingResponseGateway _responseGateway;
+
+        public GameSessionNotFound(
             IGetStartingCard getStartingCard,
-            IAwaitingResponseGateway responseGateway,
-            IPackVersionGateway packVersionGateway,
-            IGenerateSeed generateSeed,
-            IPublishMessageAdaptor publishEndPoint)
+            IAwaitingResponseGateway responseGateway)
         {
-            if (InvalidMessageID(gameSessionNotFoundRequest))
+            _getStartingCard = getStartingCard;
+            _responseGateway = responseGateway;
+        }
+        public void Execute(string sessionID, string messageID)
+        {
+            if (InvalidIDString(messageID))
             {
                 throw new InvalidMessageIDException();
             }
 
-            if (InvalidSessionID(gameSessionNotFoundRequest))
+            if (InvalidIDString(sessionID))
             {
                 throw new InvalidSessionIDException();
             }
 
-            if (responseGateway.HasID(gameSessionNotFoundRequest.MessageID))
+            if (_responseGateway.HasID(messageID))
             {
-                responseGateway.PopID(gameSessionNotFoundRequest.MessageID);
-                getStartingCard.Execute(
-                    gameSessionNotFoundRequest.SessionID, 
-                    packVersionGateway,responseGateway, 
-                    generateSeed,
-                    publishEndPoint);
+                _responseGateway.PopID(messageID);
+                _getStartingCard.Execute(sessionID);
             }
         }
 
-        private static bool InvalidMessageID(IGameSessionNotFoundRequest gameSessionNotFoundRequest)
-        {
-            return gameSessionNotFoundRequest.MessageID == null ||
-                   string.IsNullOrEmpty(gameSessionNotFoundRequest.MessageID) ||
-                   string.IsNullOrWhiteSpace(gameSessionNotFoundRequest.MessageID);
-        }
-
-        private static bool InvalidSessionID(IGameSessionNotFoundRequest gameSessionNotFoundRequest)
-        {
-            return gameSessionNotFoundRequest.SessionID == null ||
-                   string.IsNullOrEmpty(gameSessionNotFoundRequest.SessionID) ||
-                   string.IsNullOrWhiteSpace(gameSessionNotFoundRequest.SessionID);
-        }
+        private static bool InvalidIDString(string id) => id == null || string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id);
     }
 }

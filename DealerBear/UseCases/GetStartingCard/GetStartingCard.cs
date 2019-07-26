@@ -9,33 +9,41 @@ namespace DealerBear.UseCases.GetStartingCard
 {
     public class GetStartingCard : IGetStartingCard
     {
-        public void Execute(
-            string sessionID, 
-            IPackVersionGateway packVersionGateway, 
+        private readonly IPackVersionGateway _packVersionGateway;
+        private readonly IAwaitingResponseGateway _awaitingResponseGateway;
+        private readonly IGenerateSeed _generateSeedUseCase;
+        private readonly IPublishMessageAdaptor _publishEndPoint;
+
+        public GetStartingCard(
+            IPackVersionGateway packVersionGateway,
             IAwaitingResponseGateway awaitingResponseGateway,
             IGenerateSeed generateSeedUseCase,
             IPublishMessageAdaptor publishEndPoint)
         {
-            if (InvalidSessionID(sessionID))
+            _packVersionGateway = packVersionGateway;
+            _awaitingResponseGateway = awaitingResponseGateway;
+            _generateSeedUseCase = generateSeedUseCase;
+            _publishEndPoint = publishEndPoint;
+        }
+        public void Execute(string sessionID)
+        {
+            if (InvalidIDString(sessionID))
             {
                 throw new InvalidSessionIDException();
             }
 
             string messageID = Guid.NewGuid().ToString();
-            publishEndPoint.Publish(new Messages.Implementation.RequestStartingCard
+            _publishEndPoint.Publish(new Messages.Implementation.RequestStartingCard
             {
                 MessageID = messageID,
                 SessionID = sessionID,
-                PackVersionNumber = packVersionGateway.GetCurrentPackVersion(),
-                Seed = generateSeedUseCase.Execute(),
+                PackVersionNumber = _packVersionGateway.GetCurrentPackVersion(),
+                Seed = _generateSeedUseCase.Execute(),
             });
-            awaitingResponseGateway.SaveID(messageID);
+            _awaitingResponseGateway.SaveID(messageID);
         }
 
 
-        private static bool InvalidSessionID(string sessionID)
-        {
-            return sessionID == null || string.IsNullOrEmpty(sessionID) || string.IsNullOrWhiteSpace(sessionID);
-        }
+        private static bool InvalidIDString(string id) => id == null || string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id);
     }
 }

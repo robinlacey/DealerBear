@@ -7,9 +7,9 @@ namespace DealerBearTests.Mocks
 {
     public class GetStartingCardDummy : IGetStartingCard
     {
-        public void Execute(string sessionID, IPackVersionGateway packVersionGateway, IAwaitingResponseGateway awaitingResponseGateway, IGenerateSeed generateSeedUseCase,
-            IPublishMessageAdaptor publishEndPoint)
+        public void Execute(string sessionID)
         {
+            
         }
     }
 }

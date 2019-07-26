@@ -2,37 +2,37 @@ using System;
 using DealerBear.Adaptor.Interface;
 using DealerBear.Exceptions;
 using DealerBear.Gateway.Interface;
-using DealerBear.Messages;
 using DealerBear.Messages.Implementation;
-using DealerBear.Messages.Interface;
 using DealerBear.UseCases.CheckIfGameInProgress.Interface;
 
 namespace DealerBear.UseCases.CheckIfGameInProgress
 {
     public class CheckIfGameInProgress : ICheckIfGameInProgress
     {
-        public void Execute(IGameRequest gameRequest, IAwaitingResponseGateway responseGateway,
+        private readonly IAwaitingResponseGateway _responseGateway;
+        private readonly IPublishMessageAdaptor _publishEndPoint;
+
+        public CheckIfGameInProgress(IAwaitingResponseGateway responseGateway,
             IPublishMessageAdaptor publishEndPoint)
         {
-            if (InvalidSessionID(gameRequest))
+            _responseGateway = responseGateway;
+            _publishEndPoint = publishEndPoint;
+        }
+        public void Execute(string sessionID)
+        {
+            if (InvalidIDString(sessionID))
             {
                 throw new InvalidSessionIDException();
             }
 
             string messageID = Guid.NewGuid().ToString();
-            responseGateway.SaveID(messageID);
-            publishEndPoint.Publish(new RequestGameIsSessionIDInUse
+            _responseGateway.SaveID(messageID);
+            _publishEndPoint.Publish(new RequestGameIsSessionIDInUse
             {
-                SessionID = gameRequest.SessionID,
+                SessionID = sessionID,
                 MessageID = messageID
             });
         }
-
-        private static bool InvalidSessionID(IGameRequest gameRequest)
-        {
-            return gameRequest.SessionID == null ||
-                   string.IsNullOrEmpty(gameRequest.SessionID) ||
-                   string.IsNullOrWhiteSpace(gameRequest.SessionID);
-        }
+        private static bool InvalidIDString(string id) => id == null || string.IsNullOrEmpty(id) || string.IsNullOrWhiteSpace(id);
     }
 }

@@ -1,6 +1,5 @@
 using System;
 using DealerBear.Exceptions;
-using DealerBear.Messages;
 using DealerBear.Messages.Interface;
 using DealerBear.UseCases.GetStartingCard;
 using DealerBearTests.Mocks;
@@ -19,10 +18,8 @@ namespace DealerBearTests.UseCases
                 [TestCase(null)]
                 public void ThenThrowsInvalidSessionID(string sessionID)
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    Assert.Throws<InvalidSessionIDException>(() => getStartingCard.Execute(sessionID,
-                        new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(), publishEndPointSpy));
+                    Assert.Throws<InvalidSessionIDException>(() => new GetStartingCard( new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(), publishEndPointSpy).Execute(sessionID));
                 }
             }
         }
@@ -35,10 +32,9 @@ namespace DealerBearTests.UseCases
                 [TestCase("Is A Good Dog")]
                 public void ThenValueIsSavedToCreateGameGateway(string sessionID)
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    getStartingCard.Execute(sessionID, new PackVersionGatewayDummy(), new AwaitingResponseGatewayDummy(), new GenerateSeedDummy(),
-                        publishEndPointSpy);
+                    new GetStartingCard(new PackVersionGatewayDummy(), new AwaitingResponseGatewayDummy(), new GenerateSeedDummy(),
+                        publishEndPointSpy).Execute(sessionID );
                     Assert.True(publishEndPointSpy.MessageObject is IRequestStartingCard);
                     IRequestStartingCard newGameData = (IRequestStartingCard) publishEndPointSpy.MessageObject;
                     Assert.True(newGameData.SessionID == sessionID);
@@ -52,10 +48,9 @@ namespace DealerBearTests.UseCases
                 [TestCase(-10)]
                 public void ThenValueIsSavedToCreateGameGateway(int version)
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     PackVersionGatewayStub stub = new PackVersionGatewayStub(version);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    getStartingCard.Execute("SessionID", stub,new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(),  publishEndPointSpy);
+                    new GetStartingCard( stub,new AwaitingResponseGatewayDummy(),  new GenerateSeedDummy(),  publishEndPointSpy).Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IRequestStartingCard);
                     IRequestStartingCard newGameData = (IRequestStartingCard) publishEndPointSpy.MessageObject;
                     Assert.True(newGameData.PackVersionNumber == version);
@@ -69,10 +64,9 @@ namespace DealerBearTests.UseCases
                 [TestCase(-234)]
                 public void ThenValueIsSavedToCreateGameGateway(int seedGeneratorReturnValue)
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     GenerateSeedStub stub = new GenerateSeedStub(seedGeneratorReturnValue);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    getStartingCard.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  stub, publishEndPointSpy);
+                    new GetStartingCard( new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(),  stub, publishEndPointSpy).Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IRequestStartingCard);
                     IRequestStartingCard newGameData = (IRequestStartingCard) publishEndPointSpy.MessageObject;
                     Assert.True(Math.Abs(newGameData.Seed - seedGeneratorReturnValue) < 0.1f);
@@ -85,10 +79,9 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenNewMessageIDIsGUID()
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     GenerateSeedStub stub = new GenerateSeedStub(0);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
-                    getStartingCard.Execute("SessionID", new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(), stub, publishEndPointSpy);
+                    new GetStartingCard(new PackVersionGatewayDummy(),new AwaitingResponseGatewayDummy(), stub, publishEndPointSpy).Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IRequestStartingCard);
                     IRequestStartingCard newGameData = (IRequestStartingCard) publishEndPointSpy.MessageObject;
                     Assert.True(Guid.TryParse(newGameData.MessageID, out Guid _));
@@ -97,11 +90,10 @@ namespace DealerBearTests.UseCases
                 [Test]
                 public void ThenNewMessageIdIsAddedToAwaitingResponseGateway()
                 {
-                    DealerBear.UseCases.GetStartingCard.Interface.IGetStartingCard getStartingCard = new GetStartingCard();
                     GenerateSeedStub stub = new GenerateSeedStub(0);
                     PublishEndPointSpy publishEndPointSpy = new PublishEndPointSpy();
                     AwaitingResponseGatewaySpy spy = new AwaitingResponseGatewaySpy(true);
-                    getStartingCard.Execute("SessionID", new PackVersionGatewayDummy(),spy, stub, publishEndPointSpy);
+                    new GetStartingCard(new PackVersionGatewayDummy(),spy, stub, publishEndPointSpy).Execute("SessionID");
                     Assert.True(publishEndPointSpy.MessageObject is IRequestStartingCard);
                     IRequestStartingCard newGameData = (IRequestStartingCard) publishEndPointSpy.MessageObject;
                     Assert.True(spy.SaveIDInput == newGameData.MessageID);

@@ -1,4 +1,3 @@
-using DealerBear.Messages;
 using DealerBear.Messages.Interface;
 
 namespace DealerBearTests.Mocks

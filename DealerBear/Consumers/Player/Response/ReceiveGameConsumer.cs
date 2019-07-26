@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using DealerBear.Messages;
 using DealerBear.Messages.Interface;
 using MassTransit;
 
