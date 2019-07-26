@@ -1,22 +1,27 @@
+using System.Collections.Generic;
 using DealerBear.Gateway.Interface;
 
 namespace DealerBear.Gateway
 {
     public class InMemoryAwaitingResponseGateway : IAwaitingResponseGateway
     {
+        HashSet<string> _ids = new HashSet<string>();
         public bool HasID(string uid)
         {
-            throw new System.NotImplementedException();
+            return _ids.Contains(uid);
         }
 
         public void PopID(string uid)
         {
-            throw new System.NotImplementedException();
+            if (HasID(uid))
+            {
+                _ids.Remove(uid);
+            }
         }
 
         public void SaveID(string uid)
         {
-            throw new System.NotImplementedException();
+            _ids.Add(uid);
         }
     }
 }

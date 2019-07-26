@@ -4,14 +4,9 @@ namespace DealerBear.Gateway
 {
     public class InMemoryPackVersionGateway : IPackVersionGateway
     {
-        public int GetCurrentPackVersion()
-        {
-            throw new System.NotImplementedException();
-        }
+        private int packVersion;
+        public int GetCurrentPackVersion() => packVersion;
 
-        public void SetCurrentPackVersion(int value)
-        {
-            throw new System.NotImplementedException();
-        }
+        public void SetCurrentPackVersion(int value) => packVersion = value;
     }
 }
