@@ -1,4 +1,4 @@
-using DealerBear.Player.Interface;
+using System.Collections.Generic;
 
 namespace DealerBear.Card.Options.Interface
 {
@@ -6,6 +6,6 @@ namespace DealerBear.Card.Options.Interface
     {
         string Title { get; }
         string Description { get; }
-        IPlayerStats PlayerStats { get; }
+        Dictionary<string,int> PlayerStats { get; }
     }
 }
